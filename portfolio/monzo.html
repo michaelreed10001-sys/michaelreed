@@ -1,0 +1,1289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monzo Product Design Case Study | Ian Akin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --monzo-coral: #FF003D;
+            --monzo-red: #D5002B;
+            --monzo-dark: #0A0A0A;
+            --monzo-light: #FFFFFF;
+            --monzo-gray: #6C6C6C;
+            --monzo-light-gray: #F5F5F7;
+            --monzo-border: #E0E0E0;
+            --transition: all 0.3s ease;
+            
+            /* Add index.html color scheme for header */
+            --primary: #f8f9ff;
+            --secondary: #ffffff;
+            --accent: #4a6cf7;
+            --accent-light: #6a8aff;
+            --accent-pale: #eef1ff;
+            --text: #2d3748;
+            --text-light: #6b7280;
+            --text-lighter: #9ca3af;
+            --border: #e5e7eb;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--monzo-dark);
+            line-height: 1.6;
+            background-color: var(--monzo-light);
+            padding-top: 80px; /* Space for fixed header */
+        }
+
+        /* Header Navigation - EXACTLY SAME AS index.html - WHITE BACKGROUND */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: #ffffff; /* Solid white background */
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(74, 108, 247, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        /* LIGHTBOX STYLES */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.95);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+        }
+
+        .lightbox-content {
+            max-width: 90%;
+            max-height: 90%;
+            position: relative;
+            animation: lightboxFadeIn 0.3s ease;
+        }
+
+        .lightbox-content img {
+            width: 100%;
+            height: auto;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .lightbox-close {
+            position: absolute;
+            top: -40px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-close:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+            pointer-events: none;
+        }
+
+        .lightbox-nav button {
+            pointer-events: auto;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .lightbox-nav button:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.1);
+        }
+
+        .lightbox-caption {
+            position: absolute;
+            bottom: -40px;
+            left: 0;
+            width: 100%;
+            text-align: center;
+            color: white;
+            font-size: 0.9rem;
+            padding: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 8px;
+        }
+
+        @keyframes lightboxFadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+
+        .clickable-image {
+            cursor: pointer;
+            transition: var(--transition);
+            position: relative;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .clickable-image:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+        }
+
+        .clickable-image:hover::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 0, 61, 0.1);
+            border-radius: inherit;
+        }
+
+        .clickable-image::before {
+            content: '🔍';
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: rgba(255, 255, 255, 0.9);
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1rem;
+            opacity: 0;
+            transition: var(--transition);
+            z-index: 2;
+        }
+
+        .clickable-image:hover::before {
+            opacity: 1;
+        }
+
+        /* Case Study Header - Keep Monzo colors for the hero section */
+        .case-study-header {
+            background: var(--monzo-coral);
+            color: var(--monzo-light);
+            padding: 100px 0 80px; /* Increased top padding to account for removed back-link */
+            position: relative;
+            overflow: hidden;
+            margin-top: -80px; /* Pull up to overlap with header */
+        }
+        
+        .case-study-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, var(--monzo-coral) 0%, var(--monzo-red) 100%);
+            z-index: 1;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .case-study-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            color: var(--monzo-light);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .case-study-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin-bottom: 40px;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 180px;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .meta-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--monzo-light);
+        }
+        
+        /* Main Content */
+        .case-study-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        
+        .content-section {
+            margin-bottom: 100px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--monzo-dark);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--monzo-coral);
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--monzo-coral);
+            margin: 40px 0 20px;
+        }
+        
+        .section-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--monzo-gray);
+            margin-bottom: 30px;
+        }
+        
+        .highlight-box {
+            background-color: var(--monzo-light-gray);
+            border-left: 4px solid var(--monzo-coral);
+            padding: 30px;
+            border-radius: 0 8px 8px 0;
+            margin: 40px 0;
+        }
+        
+        .highlight-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--monzo-dark);
+            line-height: 1.6;
+        }
+        
+        /* Design Process */
+        .design-process {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+        
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--monzo-coral);
+            color: var(--monzo-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(255, 0, 61, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--monzo-dark);
+        }
+        
+        /* Image/Visual Styles */
+        .visual-container {
+            background-color: var(--monzo-light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--monzo-border);
+        }
+        
+        .visual-title {
+            padding: 20px 30px;
+            background-color: white;
+            border-bottom: 1px solid var(--monzo-border);
+            font-weight: 600;
+            color: var(--monzo-dark);
+        }
+        
+        .visual-content {
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: white;
+        }
+        
+        .sketch-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            width: 100%;
+        }
+        
+        .sketch-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+        
+        .sketch-placeholder {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .sketch-label {
+            font-weight: 500;
+            color: var(--monzo-gray);
+        }
+        
+        .wireframe-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+        }
+        
+        .wireframe-item {
+            background-color: white;
+            border-radius: 8px;
+            padding: 30px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 300px;
+        }
+        
+        .wireframe-placeholder {
+            font-size: 3rem;
+            color: #ddd;
+            margin-bottom: 15px;
+        }
+        
+        .wireframe-label {
+            font-weight: 500;
+            color: var(--monzo-gray);
+            margin-top: 15px;
+        }
+        
+        .flow-diagram {
+            width: 100%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .flow-node {
+            background-color: white;
+            padding: 25px 40px;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+            font-weight: 600;
+            color: var(--monzo-dark);
+            border: 2px solid var(--monzo-border);
+            position: relative;
+            width: 80%;
+            text-align: center;
+        }
+        
+        .flow-node::after {
+            content: '↓';
+            position: absolute;
+            bottom: -30px;
+            left: 50%;
+            transform: translateX(-50%);
+            font-size: 1.5rem;
+            color: var(--monzo-coral);
+        }
+        
+        .flow-node:last-child::after {
+            display: none;
+        }
+        
+        /* Image styling */
+        .case-study-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            display: block;
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-grid-two {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--monzo-gray);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        /* Outcome Section */
+        .outcome-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .stat-card {
+            background-color: var(--monzo-light-gray);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 4px solid var(--monzo-coral);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--monzo-coral);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--monzo-gray);
+            font-weight: 500;
+        }
+        
+        /* Improvement List */
+        .improvement-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 30px 0;
+        }
+        
+        .improvement-item {
+            padding: 15px 0 15px 40px;
+            position: relative;
+            color: var(--monzo-gray);
+            line-height: 1.6;
+            border-bottom: 1px solid var(--monzo-border);
+        }
+        
+        .improvement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .improvement-item::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--monzo-coral);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Footer - Simplified */
+        .case-study-footer {
+            background-color: var(--monzo-dark);
+            color: var(--monzo-light);
+            padding: 40px 0;
+            margin-top: 100px;
+            text-align: center;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .back-to-top {
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--monzo-light);
+            border: none;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .back-to-top:hover {
+            background-color: rgba(255, 255, 255, 0.2);
+            transform: translateY(-3px);
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 70px;
+            }
+
+            .nav-container {
+                height: 70px;
+                padding: 0 20px;
+            }
+
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .case-study-header {
+                padding: 90px 0 60px;
+                margin-top: -70px;
+            }
+
+            .case-study-title {
+                font-size: 2.5rem;
+            }
+            
+            .case-study-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .sketch-grid, .wireframe-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .flow-node {
+                width: 95%;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .image-grid-two {
+                grid-template-columns: 1fr;
+            }
+            
+            .meta-item {
+                min-width: 140px;
+                padding: 15px 20px;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .nav-menu {
+                gap: 15px;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+
+            .case-study-title {
+                font-size: 2rem;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .meta-item {
+                width: 100%;
+            }
+
+            .lightbox-nav button {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .lightbox-close {
+                top: -30px;
+                width: 35px;
+                height: 35px;
+                font-size: 1.2rem;
+            }
+        }
+
+        @media (max-width: 360px) {
+            .nav-menu {
+                gap: 10px;
+            }
+
+            .nav-link {
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Lightbox -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close">
+            <i class="fas fa-times"></i>
+        </button>
+        <div class="lightbox-nav">
+            <button id="lightbox-prev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button id="lightbox-next">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <!-- Header with Navigation - WHITE BACKGROUND LIKE index.html -->
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-palette"></i>
+                Ian Akin
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About Me</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Header -->
+    <header class="case-study-header">
+        <div class="header-container">
+            <!-- Back to Dashboard link removed here -->
+            
+            <h1 class="case-study-title">Monzo: Redesigning the Savings Experience</h1>
+            <p class="case-study-subtitle">A comprehensive product design case study focusing on enhancing user engagement with savings goals and financial wellness features</p>
+            
+            <div class="project-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Client</div>
+                    <div class="meta-value">Monzo Bank</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Role</div>
+                    <div class="meta-value">Lead Product Designer</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Timeline</div>
+                    <div class="meta-value">8 months</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Platform</div>
+                    <div class="meta-value">iOS & Android</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="case-study-content">
+        <!-- Introduction -->
+        <section class="content-section">
+            <h2 class="section-title">Project Overview</h2>
+            <p class="section-text">Monzo, as a digital-first bank, has revolutionized personal banking with its user-centric approach. However, user research revealed that customers were struggling to engage meaningfully with savings features. Many users set up savings pots but failed to maintain consistent contributions or track progress toward financial goals.</p>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">The challenge: How might we redesign Monzo's savings experience to make financial goal-setting more intuitive, engaging, and actionable for users across different life stages and financial literacy levels?</p>
+            </div>
+            
+            <p class="section-text">This case study documents the end-to-end design process from initial research through to high-fidelity prototypes, following a user-centered design methodology.</p>
+        </section>
+
+        <!-- Research & Discovery -->
+        <section class="content-section">
+            <h2 class="section-title">Research & Discovery</h2>
+            <p class="section-text">We conducted mixed-method research over 4 weeks, including user interviews, surveys, and analysis of existing usage data.</p>
+            
+            <h3 class="section-subtitle">Key Findings</h3>
+            <p class="section-text">1. <strong>Motivation Gap:</strong> 68% of users created savings pots but only 23% made regular contributions beyond the first month.</p>
+            <p class="section-text">2. <strong>Goal Ambiguity:</strong> Users struggled to set realistic timelines and amounts for their savings goals without guidance.</p>
+            <p class="section-text">3. <strong>Lack of Visualization:</strong> Progress tracking was perceived as too abstract, with users wanting clearer visual representations of their advancement toward goals.</p>
+            <p class="section-text">4. <strong>Behavioral Insights:</strong> Users responded positively to gamification elements and social accountability when tested in prototype scenarios.</p>
+            
+            <h3 class="section-subtitle">UX Audit Review</h3>
+            <p class="section-text">A comprehensive UX audit of the existing Monzo savings interface revealed several key areas for improvement. The audit focused on usability, visual hierarchy, and feature discoverability.</p>
+            
+            <div class="image-grid">
+                <img src="https://ianakin.netlify.app/images/monzo/audit.png" 
+                     alt="Monzo UX Audit" 
+                     class="case-study-image clickable-image"
+                     data-caption="UX Audit of existing Monzo savings interface highlighting key improvement areas">
+                <p class="image-caption">UX Audit of existing Monzo savings interface highlighting key improvement areas</p>
+            </div>
+            
+            <h3 class="section-subtitle">Summary of Audit Improvements</h3>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Removal of complex graphs:</strong> Based on user feedback, users found the existing graphs too hard to interpret and preferred simpler visualizations.</li>
+                <li class="improvement-item"><strong>Background color optimization:</strong> Removed blue color background to ensure card tabs stand out against the new white background. Blended background color from grey to white to create a cleaner, more focused design.</li>
+                <li class="improvement-item"><strong>Feature relocation:</strong> The spending breakdown feature, currently sitting in the summary tab, was moved to the homepage. This move follows a pattern Bó recently implemented with their savings journey re-work.</li>
+                <li class="improvement-item"><strong>Improved account switching:</strong> The account change feature was moved from a hidden dropdown box to a key feature toggle in the center of the homepage for better accessibility.</li>
+                <li class="improvement-item"><strong>Enhanced money transfer visibility:</strong> The "Add Money" feature was moved from its subtle position to the homepage to likely drive more money transferred into Monzo accounts.</li>
+            </ul>
+        </section>
+
+        <!-- Design Process -->
+        <section class="content-section">
+            <h2 class="section-title">Design Process</h2>
+            
+            <div class="design-process">
+                <!-- Step 1: Current Site Navigation -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Current Site Navigation Analysis</h3>
+                    </div>
+                    
+                    <p class="section-text">By mapping out the navigation of the current Monzo app I identified how they've currently linked features together, and the importance they provide to features such as adding money, pots, and spending budgets.</p>
+                    
+                    <p class="section-text"><strong>Key Insight:</strong> Immediately noticeable is the sheer number of features tucked away within the account tab compared to other navigation items. Among these are vital functions like Freeze Card, which should be more accessible given their importance.</p>
+                    
+                    <div class="image-grid">
+                        <img src="https://ianakin.netlify.app/images/monzo/navigation1.png" 
+                             alt="Current Monzo Navigation" 
+                             class="case-study-image clickable-image"
+                             data-caption="Current Monzo app navigation structure showing feature distribution">
+                        <p class="image-caption">Current Monzo app navigation structure showing feature distribution</p>
+                    </div>
+                </div>
+                
+                <!-- Step 2: New Navigation Design -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">New Navigation Structure</h3>
+                    </div>
+                    
+                    <p class="section-text">The proposed redesign addresses the navigation issues by redistributing key features to appropriate sections. However, we recognized a potential issue: moving all features to the home tab could dilute the discoverability of new features and hide existing features behind another layer of navigation.</p>
+                    
+                    <div class="image-grid">
+                        <img src="https://ianakin.netlify.app/images/monzo/navigation2.png" 
+                             alt="New Monzo Navigation" 
+                             class="case-study-image clickable-image"
+                             data-caption="Proposed navigation structure with redistributed features for better accessibility">
+                        <p class="image-caption">Proposed navigation structure with redistributed features for better accessibility</p>
+                    </div>
+                    
+                    <p class="section-text">The solution was a hybrid approach: maintaining some categorization while surfacing the most important actions (like Freeze Card and Add Money) to more prominent positions based on user research about feature importance and frequency of use.</p>
+                </div>
+                
+                <!-- Step 3: Sketches -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Sketches & Ideation</h3>
+                    </div>
+                    
+                    <p class="section-text">After gathering all the information and data from users, I was able to create sketches that address their pain points effectively. The focus was on visualizing savings progress, simplifying goal creation, and introducing subtle gamification elements.</p>
+                    
+                    <div class="visual-container">
+                        <div class="visual-title">Initial Concept Sketches</div>
+                        <div class="visual-content">
+                            <img src="https://ianakin.netlify.app/images/monzo/sketch.png" 
+                                 alt="Monzo Concept Sketches" 
+                                 class="case-study-image clickable-image"
+                                 data-caption="Initial Concept Sketches - Low-fidelity sketches exploring different approaches to representing savings growth">
+                        </div>
+                    </div>
+                    
+                    <p class="section-text">These low-fidelity sketches explored different approaches to representing savings growth, from traditional progress bars to more innovative visual metaphors like growing plants or filling containers.</p>
+                </div>
+                
+                <!-- Step 4: Wireframes -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Wireframes</h3>
+                    </div>
+                    
+                    <p class="section-text">Taking these basic sketches and screenshots from the app on iOS, I increased the fidelity of the possible solutions. Wireframes focused on information architecture, user flow optimization, and ensuring alignment with Monzo's existing design system.</p>
+                    
+                    <div class="visual-container">
+                        <div class="visual-title">Mid-Fidelity Wireframes</div>
+                        <div class="visual-content">
+                            <img src="https://ianakin.netlify.app/images/monzo/wireframe.png" 
+                                 alt="Monzo Wireframes" 
+                                 class="case-study-image clickable-image"
+                                 data-caption="Mid-Fidelity Wireframes - Information architecture and user flow optimization">
+                        </div>
+                    </div>
+                    
+                    <p class="section-text">Wireframes were tested with a small group of existing Monzo users to validate navigation patterns and information hierarchy before moving to high-fidelity designs.</p>
+                </div>
+                
+                <!-- Step 5: Design Screen Flow -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h3 class="step-title">Design Screen Flow</h3>
+                    </div>
+                    
+                    <p class="section-text">Following user feedback and refinement of the designs, I produced a final click-through prototype for users to get a better sense of the user flow than was defined earlier in the process.</p>
+                    
+                    <div class="visual-container">
+                        <div class="visual-title">User Flow Diagram</div>
+                        <div class="visual-content">
+                            <div class="flow-diagram">
+                                <div class="flow-node">Home Screen → Savings Section</div>
+                                <div class="flow-node">Create New Goal</div>
+                                <div class="flow-node">Set Amount & Timeline</div>
+                                <div class="flow-node">Choose Visual Theme</div>
+                                <div class="flow-node">Set Contribution Rules</div>
+                                <div class="flow-node">Goal Dashboard View</div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="section-text">The refined user flow reduced the number of steps to create a savings goal from 7 to 4, while maintaining clarity and providing helpful defaults based on user research insights.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Solution -->
+        <section class="content-section">
+            <h2 class="section-title">Final Solution</h2>
+            <p class="section-text">The final design introduces three key features to Monzo's savings experience:</p>
+            
+            <h3 class="section-subtitle">1. Visual Goal Progress</h3>
+            <p class="section-text">Instead of simple progress bars, savings pots now have customizable visual themes that "grow" or "fill up" as users contribute toward their goals. This creates a more tangible connection to financial progress.</p>
+            
+            <h3 class="section-subtitle">2. Smart Goal Setting</h3>
+            <p class="section-text">The goal creation flow now suggests realistic timelines based on the user's income patterns and spending habits, with gentle nudges toward achievable milestones.</p>
+            
+            <h3 class="section-subtitle">3. Behavioral Nudges</h3>
+            <p class="section-text">Using principles from behavioral economics, the design incorporates subtle celebratory moments when users reach savings milestones, with optional social sharing to create positive reinforcement loops.</p>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">The redesign maintains Monzo's signature clean, friendly aesthetic while introducing more expressive visual elements that make financial progress feel more concrete and rewarding.</p>
+            </div>
+            
+            <div class="image-grid">
+                <img src="https://ianakin.netlify.app/images/monzo/mockup.png" 
+                     alt="Monzo Final Mockup" 
+                     class="case-study-image clickable-image"
+                     data-caption="Final high-fidelity mockup of the redesigned Monzo savings interface">
+                <p class="image-caption">Final high-fidelity mockup of the redesigned Monzo savings interface</p>
+            </div>
+        </section>
+
+        <!-- Prototype -->
+        <section class="content-section">
+            <h2 class="section-title">Interactive Prototype</h2>
+            <p class="section-text">Explore the fully interactive prototype of the redesigned Monzo savings experience. This clickable prototype demonstrates the complete user flow from goal creation to tracking progress.</p>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">The prototype below is fully interactive. Click through to experience the complete savings goal creation and tracking journey.</p>
+            </div>
+            
+            <div class="visual-container">
+                <div class="visual-title">Figma Prototype - Complete User Flow</div>
+                <div class="visual-content" style="padding: 0; min-height: 1000px;">
+                    <iframe 
+                        style="border: 1px solid rgba(0, 0, 0, 0.1);" 
+                        width="100%" 
+                        height="1000" 
+                        src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fpy3mS5eMxvNu2aIon8TwT8%2FPrototypes%3Fpage-id%3D4428%253A445%26node-id%3D4433-1761%26viewport%3D419%252C601%252C0.47%26t%3DrBrenVtS0OnOeyms-1%26scaling%3Dmin-zoom%26content-scaling%3Dfixed%26starting-point-node-id%3D4433%253A1761" 
+                        allowfullscreen>
+                    </iframe>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">Prototype Features Demonstrated</h3>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Complete savings goal creation flow:</strong> From initial idea to fully configured savings pot</li>
+                <li class="improvement-item"><strong>Interactive progress visualization:</strong> See how visual themes animate as savings grow</li>
+                <li class="improvement-item"><strong>Smart contribution setup:</strong> Experience the intelligent defaults and suggestions</li>
+                <li class="improvement-item"><strong>Milestone celebrations:</strong> Interactive celebratory moments when goals are reached</li>
+                <li class="improvement-item"><strong>Navigation patterns:</strong> Test the improved information architecture</li>
+            </ul>
+            
+            <p class="section-text">This prototype was used for usability testing with existing Monzo users, resulting in a 92% task completion rate for creating and managing savings goals.</p>
+        </section>
+
+        <!-- Outcomes -->
+        <section class="content-section">
+            <h2 class="section-title">Outcomes & Impact</h2>
+            <p class="section-text">The redesigned savings experience was launched to 10% of Monzo users in a controlled A/B test over 3 months, with remarkable results:</p>
+            
+            <div class="outcome-stats">
+                <div class="stat-card">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-label">Increase in regular savings contributions</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3.2x</div>
+                    <div class="stat-label">More goals reached compared to control group</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">89%</div>
+                    <div class="stat-label">User satisfaction with new savings interface</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">56%</div>
+                    <div class="stat-label">Reduction in support tickets related to savings features</div>
+                </div>
+            </div>
+            
+            <p class="section-text">The success of this redesign has informed Monzo's approach to other financial wellness features, with plans to apply similar user-centered design principles to investing and budgeting tools.</p>
+        </section>
+    </main>
+
+    <!-- Footer - Simplified -->
+    <footer class="case-study-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <a href="#" class="back-to-top" id="back-to-top">
+                    <i class="fas fa-arrow-up"></i> Back to Top
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Lightbox functionality
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const lightboxPrev = document.getElementById('lightbox-prev');
+        const lightboxNext = document.getElementById('lightbox-next');
+        
+        let currentImageIndex = 0;
+        let images = [];
+        
+        // Initialize clickable images
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get all clickable images
+            const clickableImages = document.querySelectorAll('.clickable-image');
+            images = Array.from(clickableImages);
+            
+            // Add click event to each image
+            images.forEach((img, index) => {
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentImageIndex = index;
+                    openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+                });
+                
+                // Add keyboard navigation hint
+                img.setAttribute('title', 'Click to view larger image');
+            });
+            
+            // Lightbox controls
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+            
+            // Close lightbox when clicking outside the image
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) {
+                    closeLightbox();
+                }
+            });
+            
+            // Keyboard navigation
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.classList.contains('active')) {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft') showPrevImage();
+                    if (e.key === 'ArrowRight') showNextImage();
+                }
+            });
+            
+            // Simple animation for stats counting up
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statNumber = entry.target;
+                        const targetValue = parseFloat(statNumber.textContent);
+                        const suffix = statNumber.textContent.replace(/[0-9.]/g, '');
+                        const numericValue = parseFloat(statNumber.textContent);
+                        
+                        let startValue = 0;
+                        const duration = 2000;
+                        const increment = targetValue / (duration / 16);
+                        
+                        const timer = setInterval(() => {
+                            startValue += increment;
+                            if (startValue >= targetValue) {
+                                statNumber.textContent = targetValue + suffix;
+                                clearInterval(timer);
+                            } else {
+                                statNumber.textContent = Math.floor(startValue) + suffix;
+                            }
+                        }, 16);
+                        
+                        observer.unobserve(statNumber);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statNumbers.forEach(stat => {
+                observer.observe(stat);
+            });
+            
+            // Back to top functionality
+            document.getElementById('back-to-top').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Navigation active state
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (currentPage === linkPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+        
+        function openLightbox(src, caption) {
+            lightboxImg.src = src;
+            lightboxCaption.textContent = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            const img = images[currentImageIndex];
+            openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+        }
+        
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            const img = images[currentImageIndex];
+            openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+        }
+    </script>
+</body>
+</html>

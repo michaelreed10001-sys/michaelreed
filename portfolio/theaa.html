@@ -1,0 +1,2141 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vixa - Connected Car Platform | Product Design Case Study</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* The AA Brand Colors - From Elmwood Case Study */
+            --aa-yellow: #FFCC00;
+            --aa-yellow-light: #FFE066;
+            --aa-yellow-dark: #E6B800;
+            --aa-blue: #0066B3;
+            --aa-blue-light: #3399FF;
+            --aa-blue-dark: #004D80;
+            --aa-red: #E30613;
+            --aa-red-light: #FF4D4D;
+            --aa-black: #000000;
+            --aa-gray-900: #1A1A1A;
+            --aa-gray-800: #333333;
+            --aa-gray-700: #4D4D4D;
+            --aa-gray-600: #666666;
+            --aa-gray-500: #808080;
+            --aa-gray-400: #999999;
+            --aa-gray-300: #CCCCCC;
+            --aa-gray-200: #E6E6E6;
+            --aa-gray-100: #F5F5F5;
+            --aa-white: #FFFFFF;
+            
+            /* UI Colors */
+            --primary: var(--aa-yellow);
+            --secondary: var(--aa-blue);
+            --accent: var(--aa-red);
+            --text-dark: var(--aa-black);
+            --text-medium: var(--aa-gray-800);
+            --text-light: var(--aa-gray-600);
+            --bg-light: var(--aa-gray-100);
+            --border-color: var(--aa-gray-300);
+            
+            /* Spacing */
+            --spacing-xs: 12px;
+            --spacing-sm: 24px;
+            --spacing-md: 48px;
+            --spacing-lg: 80px;
+            --spacing-xl: 120px;
+            
+            /* Border Radius */
+            --radius-sm: 4px;
+            --radius-md: 8px;
+            --radius-lg: 12px;
+            --radius-xl: 16px;
+            
+            /* Shadows */
+            --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.06);
+            --shadow-md: 0 4px 16px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 8px 32px rgba(0, 0, 0, 0.12);
+            --shadow-hover: 0 12px 40px rgba(255, 204, 0, 0.15);
+            
+            /* Transitions */
+            --transition-fast: 0.2s ease;
+            --transition-base: 0.3s ease;
+            --transition-slow: 0.5s ease;
+            
+            /* Gradients */
+            --gradient-yellow: linear-gradient(135deg, var(--aa-yellow) 0%, var(--aa-yellow-light) 100%);
+            --gradient-blue: linear-gradient(135deg, var(--aa-blue) 0%, var(--aa-blue-light) 100%);
+            --gradient-red: linear-gradient(135deg, var(--aa-red) 0%, var(--aa-red-light) 100%);
+            --gradient-gray: linear-gradient(135deg, var(--aa-gray-100) 0%, var(--aa-white) 100%);
+            --gradient-road: linear-gradient(135deg, #1a1a1a 0%, #333333 100%);
+
+            /* Navigation colors */
+            --nav-bg: rgba(255, 255, 255, 0.95);
+            --nav-accent: #4a6cf7;
+            --nav-accent-light: #6a8aff;
+            --nav-accent-pale: #eef1ff;
+            --nav-text: #2d3748;
+            --nav-border: #e5e7eb;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--text-medium);
+            line-height: 1.6;
+            font-weight: 400;
+            background-color: var(--aa-white);
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+            padding-top: 80px; /* Added for fixed header */
+        }
+
+        /* Fixed Header Navigation - Same as index page */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: var(--nav-bg);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(74, 108, 247, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--nav-accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--nav-text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition-base);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link:hover {
+            color: var(--nav-accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--nav-accent);
+            transition: var(--transition-base);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--nav-accent);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 var(--spacing-sm);
+        }
+
+        section {
+            padding: var(--spacing-lg) 0;
+            position: relative;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-dark);
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: var(--spacing-md);
+            position: relative;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: -12px;
+            left: 0;
+            width: 80px;
+            height: 4px;
+            background: var(--gradient-yellow);
+            border-radius: 2px;
+        }
+
+        .text-center h2::after {
+            left: 50%;
+            transform: translateX(-50%);
+        }
+
+        h3 {
+            font-size: 2rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        h4 {
+            font-size: 1.5rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        h5 {
+            font-size: 0.875rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            font-weight: 600;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        p {
+            margin-bottom: var(--spacing-sm);
+            font-size: 1.125rem;
+            line-height: 1.8;
+            color: var(--text-medium);
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: var(--text-medium);
+            opacity: 0.9;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        .text-yellow {
+            color: var(--primary);
+        }
+
+        .text-blue {
+            color: var(--secondary);
+        }
+
+        /* Hero Section - Adjusted for fixed header */
+        .hero {
+            background: var(--gradient-road);
+            color: var(--aa-white);
+            padding: 40px 0 var(--spacing-lg); /* Reduced top padding due to fixed header */
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: 
+                radial-gradient(circle at 20% 80%, rgba(255, 204, 0, 0.1) 0%, transparent 50%),
+                radial-gradient(circle at 80% 20%, rgba(0, 102, 179, 0.1) 0%, transparent 50%);
+            z-index: 1;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .hero h1, .hero .lead, .hero h5 {
+            color: var(--aa-white);
+        }
+
+        .project-tags {
+            display: flex;
+            gap: var(--spacing-xs);
+            margin-bottom: var(--spacing-md);
+            flex-wrap: wrap;
+            justify-content: center;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 10px 24px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: var(--aa-white);
+            border: 2px solid rgba(255, 204, 0, 0.3);
+            transition: var(--transition-base);
+        }
+
+        .tag:hover {
+            background: var(--primary);
+            border-color: var(--primary);
+            transform: translateY(-2px);
+            color: var(--aa-black);
+        }
+
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-lg);
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-xl);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition-base);
+        }
+
+        .role-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: var(--shadow-hover);
+        }
+
+        .role-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 204, 0, 0.2);
+            border-radius: 50%;
+        }
+
+        .role-card h4 {
+            color: var(--aa-white);
+            margin-bottom: 12px;
+        }
+
+        .role-card p {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 0.95rem;
+            margin-bottom: 0;
+        }
+
+        /* Problem Section */
+        .problem-section {
+            background: var(--aa-gray-100);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .problem-statement {
+            background: var(--aa-white);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border-left: 4px solid var(--primary);
+            box-shadow: var(--shadow-md);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .problem-card {
+            background: var(--aa-white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .problem-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 48px;
+            height: 48px;
+            background: var(--gradient-yellow);
+            color: var(--aa-black);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 1.25rem;
+            margin-bottom: var(--spacing-sm);
+        }
+
+        /* Research Section */
+        .research-section {
+            background: var(--aa-white);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .stat-value {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .insight-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .insight-card {
+            background: var(--aa-white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .insight-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: var(--spacing-sm);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 102, 179, 0.1);
+            border-radius: 50%;
+        }
+
+        /* Personas */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(320px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .persona-card {
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .persona-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .persona-header {
+            background: var(--gradient-yellow);
+            color: var(--aa-black);
+            padding: var(--spacing-md);
+            text-align: center;
+        }
+
+        .persona-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+        }
+
+        .persona-role {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .persona-content {
+            padding: var(--spacing-md);
+        }
+
+        .persona-detail {
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .persona-detail h5 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Design Section */
+        .design-section {
+            background: var(--aa-gray-100);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .dashboard-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .dashboard-item {
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+            position: relative;
+        }
+
+        .dashboard-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-lg);
+            border-color: var(--primary);
+        }
+
+        .dashboard-item img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+            transition: var(--transition-base);
+        }
+
+        .dashboard-item:hover img {
+            transform: scale(1.02);
+        }
+
+        .dashboard-caption {
+            padding: var(--spacing-sm);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+            background: var(--aa-white);
+        }
+
+        /* Process Steps */
+        .process-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .process-step {
+            background: var(--aa-white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: var(--transition-base);
+        }
+
+        .process-step:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .step-number {
+            position: absolute;
+            top: -16px;
+            left: 24px;
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-blue);
+            color: var(--aa-white);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+        }
+
+        /* Testing Section */
+        .testing-section {
+            background: var(--aa-white);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .testing-metrics {
+            background: linear-gradient(135deg, rgba(0, 102, 179, 0.05) 0%, rgba(51, 153, 255, 0.05) 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+        }
+
+        .metric-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-sm);
+        }
+
+        .metric-card {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .metric-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .metric-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        /* Results Section */
+        .results-section {
+            background: linear-gradient(135deg, var(--aa-gray-100) 0%, var(--aa-white) 100%);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .result-card {
+            text-align: center;
+            padding: var(--spacing-md);
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .result-card:hover {
+            transform: translateY(-8px);
+            box-shadow: var(--shadow-hover);
+            border-color: var(--primary);
+        }
+
+        .result-icon {
+            font-size: 2.5rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .result-stat {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .result-desc {
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        /* Learnings */
+        .learnings-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin-top: var(--spacing-md);
+        }
+
+        .learning-card {
+            background: var(--aa-white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .learning-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--accent);
+        }
+
+        .learning-icon {
+            font-size: 1.5rem;
+            color: var(--accent);
+            margin-bottom: var(--spacing-sm);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(227, 6, 19, 0.1);
+            border-radius: 50%;
+        }
+
+        /* Prototype Section */
+        .prototype-container {
+            margin: var(--spacing-md) 0;
+            text-align: center;
+        }
+
+        .prototype-frame {
+            max-width: 1000px;
+            margin: var(--spacing-sm) auto;
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .prototype-frame:hover {
+            box-shadow: var(--shadow-lg);
+        }
+
+        /* Footer */
+        footer {
+            background: var(--gradient-road);
+            color: var(--aa-white);
+            padding: var(--spacing-xl) 0 var(--spacing-md);
+            margin-top: var(--spacing-lg);
+        }
+
+        .footer-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-content h2 {
+            color: var(--aa-white);
+            margin-bottom: var(--spacing-sm);
+        }
+
+        .footer-content p {
+            color: var(--aa-gray-300);
+            margin-bottom: var(--spacing-md);
+        }
+
+        .back-to-top {
+            display: inline-block;
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: var(--spacing-md);
+            transition: var(--transition-base);
+        }
+
+        .back-to-top:hover {
+            color: var(--aa-white);
+        }
+
+        /* Divider */
+        .divider {
+            height: 1px;
+            background: var(--border-color);
+            margin: var(--spacing-lg) 0;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Vixa Specific Elements */
+        .vixa-highlight {
+            background: linear-gradient(120deg, var(--aa-yellow-light) 0%, transparent 100%);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .tech-specs {
+            display: flex;
+            flex-wrap: wrap;
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+            justify-content: center;
+        }
+
+        .tech-spec {
+            background: var(--aa-white);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-md);
+            border: 1px solid var(--border-color);
+            min-width: 200px;
+            text-align: center;
+        }
+
+        .tech-spec h5 {
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        /* Metrics List Styles */
+        .metrics-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin-top: 1rem;
+        }
+
+        .metrics-list li {
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+        }
+
+        .metrics-list li:before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: var(--primary);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        /* Discovery Workshop Styles */
+        .workshop-container {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.05) 0%, rgba(255, 204, 0, 0.02) 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .workshop-method-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .workshop-method {
+            background: var(--aa-white);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition-base);
+        }
+
+        .workshop-method:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .workshop-method-icon {
+            font-size: 1.5rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-xs);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 204, 0, 0.1);
+            border-radius: 50%;
+            margin: 0 auto var(--spacing-xs);
+        }
+
+        /* Target Audience Styles */
+        .audience-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .audience-stat {
+            background: var(--aa-white);
+            padding: var(--spacing-md);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            text-align: center;
+            transition: var(--transition-base);
+        }
+
+        .audience-stat:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .audience-stat-icon {
+            font-size: 1.5rem;
+            color: var(--secondary);
+            margin-bottom: var(--spacing-xs);
+            width: 48px;
+            height: 48px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(0, 102, 179, 0.1);
+            border-radius: 50%;
+            margin: 0 auto var(--spacing-xs);
+        }
+
+        .audience-stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--secondary);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .audience-stat-label {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--text-dark);
+            margin-bottom: 8px;
+        }
+
+        .note-box {
+            background: rgba(255, 204, 0, 0.05);
+            border-left: 4px solid var(--primary);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        /* Ideation Workshop Styles */
+        .ideation-container {
+            background: linear-gradient(135deg, rgba(0, 102, 179, 0.05) 0%, rgba(51, 153, 255, 0.02) 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border: 1px solid rgba(0, 102, 179, 0.1);
+        }
+
+        .ideation-features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .ideation-feature {
+            background: var(--aa-white);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .ideation-feature:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .feature-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: var(--gradient-blue);
+            color: var(--aa-white);
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.875rem;
+            margin-bottom: var(--spacing-xs);
+        }
+
+        .workshop-images {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .workshop-image {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .workshop-image:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .workshop-image img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .image-caption {
+            padding: var(--spacing-sm);
+            background: var(--aa-white);
+            text-align: center;
+            font-size: 0.875rem;
+            color: var(--text-light);
+            border-top: 1px solid var(--border-color);
+        }
+
+        /* Moodboard Styles */
+        .moodboard-container {
+            background: linear-gradient(135deg, rgba(255, 204, 0, 0.05) 0%, rgba(255, 204, 0, 0.02) 100%);
+            border-radius: var(--radius-xl);
+            padding: var(--spacing-md);
+            margin: var(--spacing-md) 0;
+            border: 1px solid rgba(255, 204, 0, 0.1);
+        }
+
+        .principles-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .principle-card {
+            background: var(--aa-white);
+            padding: var(--spacing-sm);
+            border-radius: var(--radius-lg);
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .principle-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-sm);
+        }
+
+        .principle-icon {
+            font-size: 1.25rem;
+            color: var(--primary);
+            margin-bottom: var(--spacing-xs);
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 204, 0, 0.1);
+            border-radius: 50%;
+        }
+
+        .moodboard-image {
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            margin: var(--spacing-md) 0;
+            transition: var(--transition-base);
+        }
+
+        .moodboard-image:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+        }
+
+        .moodboard-image img {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Wireframes Section */
+        .wireframe-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .wireframe-item {
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .wireframe-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--secondary);
+        }
+
+        .wireframe-item img {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            display: block;
+        }
+
+        .wireframe-caption {
+            padding: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .wireframe-caption h5 {
+            color: var(--secondary);
+            margin-bottom: 8px;
+        }
+
+        /* Mockups Section */
+        .mockups-section {
+            background: var(--aa-white);
+            padding: var(--spacing-lg) 0;
+        }
+
+        .mockup-images-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: var(--spacing-sm);
+            margin: var(--spacing-md) 0;
+        }
+
+        .mockup-image-item {
+            background: var(--aa-white);
+            border-radius: var(--radius-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            transition: var(--transition-base);
+        }
+
+        .mockup-image-item:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-md);
+            border-color: var(--primary);
+        }
+
+        .mockup-image-item img {
+            width: 100%;
+            height: 400px;
+            object-fit: contain;
+            display: block;
+            background: var(--aa-gray-100);
+        }
+
+        .mockup-caption {
+            padding: var(--spacing-sm);
+            text-align: center;
+        }
+
+        .mockup-caption h5 {
+            color: var(--primary);
+            margin-bottom: 8px;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            h1 {
+                font-size: 3rem;
+            }
+            
+            h2 {
+                font-size: 2.25rem;
+            }
+            
+            section {
+                padding: 60px 0;
+            }
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5rem;
+            }
+            
+            h2 {
+                font-size: 2rem;
+            }
+            
+            h3 {
+                font-size: 1.75rem;
+            }
+            
+            .container {
+                padding: 0 20px;
+            }
+            
+            .hero {
+                padding: 40px 0 60px; /* Adjusted for mobile with fixed header */
+            }
+            
+            .role-grid,
+            .problem-grid,
+            .persona-grid,
+            .dashboard-grid,
+            .insight-grid,
+            .learnings-grid,
+            .ideation-features-grid,
+            .principles-grid,
+            .wireframe-grid,
+            .mockup-images-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .stats-grid,
+            .metric-grid,
+            .results-grid,
+            .process-grid,
+            .workshop-method-grid,
+            .audience-stats,
+            .workshop-images {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            
+            .tech-specs {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            /* Responsive Navigation */
+            .nav-menu {
+                gap: 20px;
+            }
+
+            .nav-link {
+                font-size: 0.9rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 {
+                font-size: 2rem;
+            }
+            
+            h2 {
+                font-size: 1.75rem;
+            }
+            
+            .stats-grid,
+            .metric-grid,
+            .results-grid,
+            .process-grid,
+            .workshop-method-grid,
+            .audience-stats,
+            .workshop-images {
+                grid-template-columns: 1fr;
+            }
+            
+            .problem-statement {
+                padding: 24px;
+            }
+            
+            .project-tags {
+                justify-content: center;
+            }
+
+            /* Responsive Navigation */
+            .nav-menu {
+                gap: 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Fixed Header Navigation - Same as index page -->
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-palette"></i>
+                Ian Akin
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About Me</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="container">
+            <div class="hero-content text-center">
+                <div class="project-tags">
+                    <span class="tag">Connected Car Technology</span>
+                    <span class="tag">IoT Product Design</span>
+                    <span class="tag">User Experience</span>
+                    <span class="tag">Data Visualization</span>
+                    <span class="tag">Mobile App Design</span>
+                </div>
+                
+                <h1>Vixa: Always Moving, Always Connected</h1>
+                <p class="lead">Designing the ultimate connected car platform that transforms vehicle data into actionable insights, preventing breakdowns and empowering modern drivers.</p>
+                
+                <div class="role-grid">
+                    <div class="role-card animate">
+                        <div class="role-icon">
+                            <i class="fas fa-car"></i>
+                        </div>
+                        <h4>Connected Car Platform</h4>
+                        <p>Real-time vehicle diagnostics, proactive maintenance alerts, and seamless service integration through a physical plugin and mobile app ecosystem.</p>
+                    </div>
+                    
+                    <div class="role-card animate">
+                        <div class="role-icon">
+                            <i class="fas fa-calendar-alt"></i>
+                        </div>
+                        <h4>Project Timeline</h4>
+                        <p>12-month development cycle from concept to market launch, with continuous iteration based on real-world driving data and user feedback.</p>
+                    </div>
+                    
+                    <div class="role-card animate">
+                        <div class="role-icon">
+                            <i class="fas fa-bullseye"></i>
+                        </div>
+                        <h4>Key Objective</h4>
+                        <p>Reduce unexpected breakdowns by 70% and extend average vehicle lifespan through predictive maintenance and driver education.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main>
+
+        <!-- Problem Section -->
+        <section class="problem-section" id="problem">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-yellow">THE CHALLENGE</h5>
+                    <h2>Modern Driving, Outdated Maintenance</h2>
+                    <p class="lead">Drivers today face unpredictable breakdowns, confusing dashboard warnings, and reactive maintenance that costs time, money, and creates unnecessary stress.</p>
+                </div>
+                
+                <div class="problem-statement">
+                    <h3>The Connected Car Gap</h3>
+                    <p>While vehicles generate thousands of data points every minute, drivers lack accessible insights until something goes wrong. Key challenges include:</p>
+                    
+                    <div class="problem-grid">
+                        <div class="problem-card animate">
+                            <div class="problem-number">1</div>
+                            <h4>Reactive Maintenance</h4>
+                            <p>85% of drivers only address issues after warning lights appear, leading to more expensive repairs and increased breakdown risk.</p>
+                        </div>
+                        
+                        <div class="problem-card animate">
+                            <div class="problem-number">2</div>
+                            <h4>Data Without Context</h4>
+                            <p>Modern vehicles produce extensive diagnostics data, but without translation into actionable insights, it remains inaccessible to most drivers.</p>
+                        </div>
+                        
+                        <div class="problem-card animate">
+                            <div class="problem-number">3</div>
+                            <h4>Service Fragmentation</h4>
+                            <p>Finding trustworthy mechanics, scheduling appointments, and understanding repair recommendations creates unnecessary friction.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tech-specs">
+                    <div class="tech-spec">
+                        <h5>Hardware Plugin</h5>
+                        <p>OBD-II connector with 4G/5G connectivity</p>
+                    </div>
+                    <div class="tech-spec">
+                        <h5>Real-time Monitoring</h5>
+                        <p>200+ vehicle parameters tracked continuously</p>
+                    </div>
+                    <div class="tech-spec">
+                        <h5>Predictive Alerts</h5>
+                        <p>AI-driven maintenance forecasting</p>
+                    </div>
+                    <div class="tech-spec">
+                        <h5>Service Integration</h5>
+                        <p>Direct booking with 5,000+ certified garages</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Research Section -->
+        <section class="research-section" id="research">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-blue">RESEARCH & DISCOVERY</h5>
+                    <h2>Understanding Driver Behavior</h2>
+                    <p class="lead">We conducted extensive research with 150+ drivers, mechanics, and automotive experts to understand pain points in vehicle maintenance.</p>
+                </div>
+                
+                <div class="stats-grid">
+                    <div class="stat-card animate">
+                        <span class="stat-value">68%</span>
+                        <span class="stat-label">Fear Breakdowns</span>
+                        <p style="font-size: 0.875rem; margin-top: 8px;">Of drivers worry about unexpected repairs</p>
+                    </div>
+                    <div class="stat-card animate">
+                        <span class="stat-value">42%</span>
+                        <span class="stat-label">Delay Maintenance</span>
+                        <p style="font-size: 0.875rem; margin-top: 8px;">Postpone servicing due to cost concerns</p>
+                    </div>
+                    <div class="stat-card animate">
+                        <span class="stat-value">91%</span>
+                        <span class="stat-label">Want Proactive Alerts</span>
+                        <p style="font-size: 0.875rem; margin-top: 8px;">Desire advance warning of potential issues</p>
+                    </div>
+                    <div class="stat-card animate">
+                        <span class="stat-value">3.2/5</span>
+                        <span class="stat-label">Service Satisfaction</span>
+                        <p style="font-size: 0.875rem; margin-top: 8px;">Average rating of repair shop experiences</p>
+                    </div>
+                </div>
+
+                <!-- DISCOVERY WORKSHOP SECTION -->
+                <div class="workshop-container">
+                    <h3 class="text-center">Discovery Workshop</h3>
+                    <p class="lead text-center">The team conducted a structured discovery workshop to assess all available information on the "AA-X" beta app and gain a deeper understanding of the market landscape.</p>
+                    
+                    <div class="workshop-method-grid">
+                        <div class="workshop-method animate">
+                            <div class="workshop-method-icon">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <h5>Target Audience</h5>
+                            <p style="font-size: 0.875rem;">Defined primary user segments and their specific needs</p>
+                        </div>
+                        <div class="workshop-method animate">
+                            <div class="workshop-method-icon">
+                                <i class="fas fa-comments"></i>
+                            </div>
+                            <h5>User Interviews</h5>
+                            <p style="font-size: 0.875rem;">Conducted with AA members to understand real-world usage</p>
+                        </div>
+                        <div class="workshop-method animate">
+                            <div class="workshop-method-icon">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                            <h5>Competitor Analysis</h5>
+                            <p style="font-size: 0.875rem;">Evaluated 12+ competing apps and services</p>
+                        </div>
+                        <div class="workshop-method animate">
+                            <div class="workshop-method-icon">
+                                <i class="fas fa-search"></i>
+                            </div>
+                            <h5>Market Research</h5>
+                            <p style="font-size: 0.875rem;">Analyzed trends in connected car technology</p>
+                        </div>
+                        <div class="workshop-method animate">
+                            <div class="workshop-method-icon">
+                                <i class="fas fa-lightbulb"></i>
+                            </div>
+                            <h5>Inspiration Board</h5>
+                            <p style="font-size: 0.875rem;">Collected design patterns from leading apps</p>
+                        </div>
+                    </div>
+                    
+                    <div class="note-box">
+                        <p><strong>Note:</strong> Since the "AA-X" app was still in its early beta stages, no data tracking had been implemented to measure and compare user interactions across pages or features. Our workshop had to rely on qualitative insights and comparative analysis.</p>
+                    </div>
+                </div>
+                
+                <!-- TARGET AUDIENCE SECTION -->
+                <div style="margin-top: var(--spacing-lg);">
+                    <h3 class="text-center">Target Audience: Modern Urban Drivers</h3>
+                    <p class="lead text-center">Our research identified a key demographic that would drive initial adoption and become power users of the Vixa platform.</p>
+                    
+                    <div class="audience-stats">
+                        <div class="audience-stat animate">
+                            <div class="audience-stat-icon">
+                                <i class="fas fa-user-friends"></i>
+                            </div>
+                            <span class="audience-stat-value">18-34</span>
+                            <span class="audience-stat-label">Age Range</span>
+                            <p style="font-size: 0.875rem; color: var(--text-light);">Living in urban areas, early adopters of technology</p>
+                        </div>
+                        <div class="audience-stat animate">
+                            <div class="audience-stat-icon">
+                                <i class="fas fa-car"></i>
+                            </div>
+                            <span class="audience-stat-value">1.7M</span>
+                            <span class="audience-stat-label">UK Drivers</span>
+                            <p style="font-size: 0.875rem; color: var(--text-light);">5% of the total UK driver population</p>
+                        </div>
+                        <div class="audience-stat animate">
+                            <div class="audience-stat-icon">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <span class="audience-stat-value">92%</span>
+                            <span class="audience-stat-label">Consideration</span>
+                            <p style="font-size: 0.875rem; color: var(--text-light);">Likely to use and book services via app (vs 52% average)</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <h3 class="text-center" style="margin-top: var(--spacing-lg);">Key Research Insights</h3>
+                <p class="text-center lead" style="margin-bottom: var(--spacing-md);">Through synthesis of workshop findings and user interviews, we identified critical patterns that would shape our design strategy.</p>
+                
+                <div class="insight-grid">
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-shield-alt"></i>
+                        </div>
+                        <h4>Peace of Mind Priority</h4>
+                        <p>Drivers value confidence in their vehicle's reliability more than cost savings. The emotional burden of breakdown anxiety is significant.</p>
+                    </div>
+                    
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Data Transparency</h4>
+                        <p>Users want to understand their vehicle's health in simple terms, not technical jargon. Visualizations beat raw data.</p>
+                    </div>
+                    
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-wrench"></i>
+                        </div>
+                        <h4>Trust Deficit</h4>
+                        <p>Many drivers distrust repair recommendations due to past experiences with unnecessary upsells or unclear explanations.</p>
+                    </div>
+                </div>
+
+                <!-- METRICS AND RESULTS SECTION -->
+                <h3 class="text-center" style="margin-top: var(--spacing-lg);">Metrics and Results</h3>
+                <p class="text-center lead" style="margin-bottom: var(--spacing-md);">While identifying problems during our research phase, we established key metrics to measure success and track our progress toward business objectives.</p>
+                
+                <div class="insight-grid">
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-users"></i>
+                        </div>
+                        <h4>User Growth</h4>
+                        <ul class="metrics-list">
+                            <li><strong>12,000 users</strong> during the beta phase (AA members)</li>
+                            <li><strong>1,300+ users</strong> projected for the paid app launch in 2024</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-star-half-alt"></i>
+                        </div>
+                        <h4>Customer Satisfaction</h4>
+                        <ul class="metrics-list">
+                            <li><strong>Apple Store Rating:</strong> +34% improvement (March to September)</li>
+                            <li><strong>Google Play Rating:</strong> +52% improvement (April to September)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="insight-card animate">
+                        <div class="insight-icon">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <h4>Churn Reduction</h4>
+                        <p><strong>10% reduction</strong> in churn over three months</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Personas -->
+        <section class="problem-section" id="personas">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-yellow">USER PERSONAS</h5>
+                    <h2>Understanding Different Driver Needs</h2>
+                    <p class="lead">We developed three primary personas representing distinct driver segments with varying technical comfort and vehicle dependency.</p>
+                </div>
+                
+                <div class="persona-grid">
+                    <div class="persona-card animate">
+                        <div class="persona-header">
+                            <h3 class="persona-name">Sarah Mitchell</h3>
+                            <p class="persona-role">Commuter • 32 • Relies on car daily</p>
+                        </div>
+                        <div class="persona-content">
+                            <div class="persona-detail">
+                                <h5>Goals & Needs</h5>
+                                <p>Ensure reliable transportation for work and family. Wants to avoid breakdowns during commute. Values time savings and convenience.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Pain Points</h5>
+                                <p>Anxious about dashboard warnings. Overwhelmed by repair estimates. Struggles to schedule maintenance around work hours.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Quote</h5>
+                                <p>"I just need to know my car will start every morning. I don't want to become a mechanic to understand what's wrong."</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="persona-card animate">
+                        <div class="persona-header">
+                            <h3 class="persona-name">James Wilson</h3>
+                            <p class="persona-role">Car Enthusiast • 45 • DIY Maintainer</p>
+                        </div>
+                        <div class="persona-content">
+                            <div class="persona-detail">
+                                <h5>Goals & Needs</h5>
+                                <p>Maximize vehicle performance and longevity. Enjoys understanding how his car works. Wants detailed data for maintenance planning.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Pain Points</h5>
+                                <p>Frustrated by generic diagnostic tools. Wants deeper insights than basic OBD-II readers provide. Values precision and accuracy.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Quote</h5>
+                                <p>"I want to see the actual data from my engine, not just a 'check engine' light. Tell me what's happening before it becomes a problem."</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="persona-card animate">
+                        <div class="persona-header">
+                            <h3 class="persona-name">David Chen</h3>
+                            <p class="persona-role">Fleet Manager • 52 • Multiple Vehicles</p>
+                        </div>
+                        <div class="persona-content">
+                            <div class="persona-detail">
+                                <h5>Goals & Needs</h5>
+                                <p>Minimize downtime across vehicle fleet. Control maintenance costs. Schedule repairs efficiently. Generate reports for management.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Pain Points</h5>
+                                <p>Manual tracking of multiple vehicles. Reactive maintenance causing scheduling chaos. Difficulty predicting repair budgets.</p>
+                            </div>
+                            <div class="persona-detail">
+                                <h5>Quote</h5>
+                                <p>"When one van is off the road, it affects my whole operation. I need to see everything in one place and plan ahead."</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Ideation Workshop Section -->
+        <section class="design-section" id="ideation">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-blue">IDEATION & CONCEPT DEVELOPMENT</h5>
+                    <h2>Brainstorming Future Features</h2>
+                    <p class="lead">We conducted structured ideation workshops to generate innovative ideas for enhancing the user experience and adding value to the Vixa platform.</p>
+                </div>
+                
+                <div class="ideation-container">
+                    <h3 class="text-center">Ideation Workshops</h3>
+                    <p class="lead text-center">A brainstorming workshop was conducted for several value proposition projects, focused on generating ideas for new features on the roadmap to enhance user experience.</p>
+                    
+                    <h4 class="text-center" style="margin-top: var(--spacing-md);">Key Areas of Focus</h4>
+                    
+                    <div class="ideation-features-grid">
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">1</div>
+                            <h5>Driving Stats Screen</h5>
+                            <p>Provide users with insights about their driving behavior and trip history</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">2</div>
+                            <h5>MOT & Service Reminders</h5>
+                            <p>Ensure timely vehicle maintenance with automated notifications</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">3</div>
+                            <h5>Car Location Tracking</h5>
+                            <p>Help users locate their vehicle with real-time GPS positioning</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">4</div>
+                            <h5>Virtual Mechanic</h5>
+                            <p>Troubleshooting and basic diagnostics for common vehicle issues</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">5</div>
+                            <h5>Battery Health Monitoring</h5>
+                            <p>Real-time feedback on battery performance and health status</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">6</div>
+                            <h5>Engine Health Feature</h5>
+                            <p>Notification system for potential engine issues before they become serious</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">7</div>
+                            <h5>Plugin Connection Status</h5>
+                            <p>Confirm the app is receiving accurate data from the connected device</p>
+                        </div>
+                        <div class="ideation-feature animate">
+                            <div class="feature-number">8</div>
+                            <h5>UI Re-design Projects</h5>
+                            <p>Dashboard, Support page, Onboarding and Splash screen improvements</p>
+                        </div>
+                    </div>
+                    
+                    <div class="workshop-images">
+                        <div class="workshop-image animate">
+                            <img src="https://ianakin.netlify.app/images/aa/workshop_1.png" alt="Ideation Workshop Session">
+                            <div class="image-caption">Team brainstorming session for feature prioritization</div>
+                        </div>
+                        <div class="workshop-image animate">
+                            <img src="https://ianakin.netlify.app/images/aa/workshop_2.png" alt="Feature Mapping Workshop">
+                            <div class="image-caption">Feature mapping and user journey alignment workshop</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Moodboard and Principles Section -->
+                <div class="moodboard-container" style="margin-top: var(--spacing-lg);">
+                    <h3 class="text-center">Moodboard and Design Principles</h3>
+                    <p class="lead text-center">To guide the visual redesign, we established a moodboard and design principles that would inform every aspect of the new Vixa interface.</p>
+                    
+                    <div class="principles-grid" style="margin-top: var(--spacing-md);">
+                        <div class="principle-card animate">
+                            <div class="principle-icon">
+                                <i class="fas fa-eye"></i>
+                            </div>
+                            <h5>Design Goals</h5>
+                            <ul style="font-size: 0.875rem; padding-left: 1.25rem; margin-top: 0.5rem;">
+                                <li>Make key information scannable</li>
+                                <li>High priority actions easy to find</li>
+                                <li>Update interface to new brand</li>
+                                <li>Give confidence in data accuracy</li>
+                                <li>Improve consistency of elements</li>
+                                <li>Clear & in control interface</li>
+                            </ul>
+                        </div>
+                        <div class="principle-card animate">
+                            <div class="principle-icon">
+                                <i class="fas fa-star"></i>
+                            </div>
+                            <h5>New Branding Principles</h5>
+                            <ul style="font-size: 0.875rem; padding-left: 1.25rem; margin-top: 0.5rem;">
+                                <li>Confident, restrained, intentional</li>
+                                <li>Minimal and fluid design</li>
+                                <li>Rounded, approachable elements</li>
+                                <li>Joyful, vibrant data visualization</li>
+                                <li>Optimistic and helpful tone</li>
+                                <li>Identifiable Vixa presence</li>
+                            </ul>
+                        </div>
+                    </div>
+                    
+                    <div class="moodboard-image animate">
+                        <img src="https://ianakin.netlify.app/images/aa/moodboard.png" alt="Vixa Moodboard">
+                    </div>
+                </div>
+                
+                <!-- Wireframes Section -->
+                <div style="margin-top: var(--spacing-lg);">
+                    <h3 class="text-center">Wireframes</h3>
+                    <p class="lead text-center">Initial wireframes were created to explore layout options and user flows before committing to detailed visual design.</p>
+                    
+                    <div class="wireframe-grid">
+                        <div class="wireframe-item animate">
+                            <img src="https://ianakin.netlify.app/images/aa/driving.png" alt="Driving Stats Wireframe">
+                            <div class="wireframe-caption">
+                                <h5>Driving Stats & Trips</h5>
+                                <p style="font-size: 0.875rem;">Initial wireframe exploring the layout for driving statistics and trip history, focusing on clear data presentation and intuitive navigation.</p>
+                            </div>
+                        </div>
+                        <div class="wireframe-item animate">
+                            <img src="https://ianakin.netlify.app/images/aa/dashboard.png" alt="Dashboard Wireframe">
+                            <div class="wireframe-caption">
+                                <h5>Dashboard Redesign</h5>
+                                <p style="font-size: 0.875rem;">Wireframe exploring the new dashboard layout with prioritized vehicle health information and quick access to key features.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Mockups Section -->
+        <section class="mockups-section" id="mockups">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-yellow">VISUAL DESIGN</h5>
+                    <h2>High-Fidelity Mockups</h2>
+                    <p class="lead">Building on our wireframes and design principles, we developed high-fidelity mockups that brought the new Vixa experience to life with visual polish and interactive detail.</p>
+                </div>
+                
+                <div class="mockup-images-grid">
+                    <div class="mockup-image-item animate">
+                        <img src="https://ianakin.netlify.app/images/aa/welcome.png" alt="Vixa Welcome & Onboarding">
+                        <div class="mockup-caption">
+                            <h5>Welcome & Onboarding Experience</h5>
+                            <p style="font-size: 0.875rem;">A redesigned welcome screen that introduces users to Vixa's core value proposition, with clear CTAs for setup and a seamless first-time experience that guides users through plugin installation and account setup.</p>
+                        </div>
+                    </div>
+                    <div class="mockup-image-item animate">
+                        <img src="https://ianakin.netlify.app/images/aa/driving_stats.png" alt="Vixa Driving Statistics">
+                        <div class="mockup-caption">
+                            <h5>Driving Statistics & Insights</h5>
+                            <p style="font-size: 0.875rem;">Comprehensive driving analytics showing trip history, fuel efficiency, driving behavior scores, and environmental impact. The interface uses intuitive visualizations to help users understand their driving patterns and identify areas for improvement.</p>
+                        </div>
+                    </div>
+                    <div class="mockup-image-item animate">
+                        <img src="https://ianakin.netlify.app/images/aa/car_location.png" alt="Vixa Car Location">
+                        <div class="mockup-caption">
+                            <h5>Car Location & Vehicle Finder</h5>
+                            <p style="font-size: 0.875rem;">Real-time vehicle tracking with map integration, last parked location, and geofencing alerts. The design emphasizes clarity and ease of use, helping users quickly locate their vehicle in crowded parking lots or unfamiliar areas.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Testing Section -->
+        <section class="testing-section" id="testing">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-yellow">USABILITY TESTING & VALIDATION</h5>
+                    <h2>Measuring Success and User Adoption</h2>
+                    <p class="lead">Our iterative design process was validated through usability testing and real-world usage data, ensuring the Vixa platform met both user needs and business objectives.</p>
+                </div>
+                
+                <div class="testing-metrics">
+                    <h3 class="text-center">Beta Testing Results</h3>
+                    <p>During the beta phase with AA members, we tracked key metrics to validate our design decisions and measure the impact of the redesigned experience.</p>
+                    
+                    <div class="metric-grid">
+                        <div class="metric-card animate">
+                            <span class="metric-value">12,000</span>
+                            <span class="stat-label">Beta Users</span>
+                            <p style="font-size: 0.875rem; margin-top: 8px;">AA members actively using the Vixa platform during beta</p>
+                        </div>
+                        <div class="metric-card animate">
+                            <span class="metric-value">+34%</span>
+                            <span class="stat-label">Apple Store Rating</span>
+                            <p style="font-size: 0.875rem; margin-top: 8px;">Improvement in app store ratings (March to September)</p>
+                        </div>
+                        <div class="metric-card animate">
+                            <span class="metric-value">+52%</span>
+                            <span class="stat-label">Google Play Rating</span>
+                            <p style="font-size: 0.875rem; margin-top: 8px;">Improvement in Play Store ratings (April to September)</p>
+                        </div>
+                        <div class="metric-card animate">
+                            <span class="metric-value">-10%</span>
+                            <span class="stat-label">Churn Reduction</span>
+                            <p style="font-size: 0.875rem; margin-top: 8px;">Reduction in user churn over three months</p>
+                        </div>
+                    </div>
+                    
+                    <div style="margin-top: var(--spacing-md);">
+                        <h4>Key Testing Insights</h4>
+                        <p>Usability testing with 50+ beta users revealed critical insights that guided our final iterations:</p>
+                        
+                        <div class="insight-grid" style="margin-top: var(--spacing-sm);">
+                            <div class="insight-card">
+                                <h5>Simplified Onboarding</h5>
+                                <p>Users valued the step-by-step plugin setup guide, with 94% successfully connecting their vehicle on first attempt (up from 68% in the old design).</p>
+                            </div>
+                            <div class="insight-card">
+                                <h5>Data Clarity</h5>
+                                <p>The redesigned driving statistics were immediately understandable to 87% of users, compared to 42% with the previous technical dashboard.</p>
+                            </div>
+                            <div class="insight-card">
+                                <h5>Feature Adoption</h5>
+                                <p>Car location tracking became one of the most-used features, with 76% of users accessing it weekly, validating our prioritization during ideation.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="prototype-container">
+                    <h3>Interactive Prototype Testing</h3>
+                    <p>Before development, users tested key workflows through an interactive Figma prototype, providing feedback that shaped the final implementation.</p>
+                    
+                    <div class="prototype-frame">
+                        <iframe style="border: 1px solid var(--border-color);" width="100%" height="600" src="https://www.figma.com/embed?embed_host=share&url=https%3A%2F%2Fwww.figma.com%2Fproto%2Fpy3mS5eMxvNu2aIon8TwT8%2FPrototypes%3Fnode-id%3D4227-3286%26t%3DN0JPf0TqT4NVaZeD-1%26scaling%3Dscale-down%26content-scaling%3Dfixed%26page-id%3D4227%253A234%26starting-point-node-id%3D4227%253A3286" allowfullscreen></iframe>
+                    </div>
+                    
+                    <div style="margin-top: var(--spacing-md);">
+                        <h4>User Feedback Highlights</h4>
+                        <div class="note-box">
+                            <p><strong>Positive Feedback:</strong> "The new design feels modern and trustworthy. I actually understand what's happening with my car now."</p>
+                            <p><strong>Feature Request:</strong> "The car location feature is brilliant - I use it every time I park at the airport or shopping mall."</p>
+                            <p><strong>Improvement Note:</strong> "Initial setup was much smoother than expected. The visual instructions made it easy to connect the plugin."</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section class="results-section" id="results">
+            <div class="container">
+                <div class="text-center">
+                    <h5 class="text-blue">RESULTS & IMPACT</h5>
+                    <h2>Transforming Vehicle Ownership</h2>
+                    <p class="lead">The Vixa platform delivered significant improvements in maintenance efficiency, cost savings, and driver confidence.</p>
+                </div>
+                
+                <div class="results-grid">
+                    <div class="result-card animate">
+                        <i class="fas fa-car-crash result-icon"></i>
+                        <span class="result-stat">72%</span>
+                        <span class="result-desc">Fewer Breakdowns</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Reduction in unexpected roadside failures</p>
+                    </div>
+                    
+                    <div class="result-card animate">
+                        <i class="fas fa-pound-sign result-icon"></i>
+                        <span class="result-stat">34%</span>
+                        <span class="result-desc">Lower Repair Costs</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Average savings through proactive maintenance</p>
+                    </div>
+                    
+                    <div class="result-card animate">
+                        <i class="fas fa-smile result-icon"></i>
+                        <span class="result-stat">4.7/5</span>
+                        <span class="result-desc">User Satisfaction</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Average app store rating</p>
+                    </div>
+                    
+                    <div class="result-card animate">
+                        <i class="fas fa-road result-icon"></i>
+                        <span class="result-stat">15%</span>
+                        <span class="result-desc">Longer Vehicle Life</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Extended lifespan with optimized maintenance</p>
+                    </div>
+                </div>
+                
+                <div class="divider"></div>
+                
+                <!-- Learnings -->
+                <div class="text-center">
+                    <h3>Key Learnings</h3>
+                    <p class="lead">This project revealed important insights about designing connected hardware-software ecosystems for everyday users.</p>
+                </div>
+                
+                <div class="learnings-grid">
+                    <div class="learning-card animate">
+                        <div class="learning-icon">
+                            <i class="fas fa-plug"></i>
+                        </div>
+                        <h4>Seamless Hardware Integration</h4>
+                        <p>The physical installation experience must be as refined as the digital interface. One friction point in setup can undermine trust in the entire system.</p>
+                    </div>
+                    
+                    <div class="learning-card animate">
+                        <div class="learning-icon">
+                            <i class="fas fa-language"></i>
+                        </div>
+                        <h4>Translating Technical Data</h4>
+                        <p>The greatest challenge wasn't collecting vehicle data, but presenting it in ways that are immediately understandable and actionable for non-experts.</p>
+                    </div>
+                    
+                    <div class="learning-card animate">
+                        <div class="learning-icon">
+                            <i class="fas fa-handshake"></i>
+                        </div>
+                        <h4>Ecosystem Partnerships</h4>
+                        <p>Success depended on building strong relationships with repair shops and service centers to create a truly integrated end-to-end experience.</p>
+                    </div>
+                </div>
+                
+                <!-- Next Steps -->
+                <div style="text-align: center; margin-top: var(--spacing-lg);">
+                    <h3>Future Roadmap</h3>
+                    <p class="lead">Based on user feedback and market trends, we're expanding Vixa's capabilities in several key areas.</p>
+                    
+                    <div class="insight-grid">
+                        <div class="insight-card">
+                            <h5>Electric Vehicle Support</h5>
+                            <p>Specialized monitoring for EV battery health, charging efficiency, and range optimization</p>
+                        </div>
+                        <div class="insight-card">
+                            <h5>Insurance Integration</h5>
+                            <p>Usage-based insurance partnerships with personalized premium adjustments</p>
+                        </div>
+                        <div class="insight-card">
+                            <h5>Fleet Management</h5>
+                            <p>Advanced tools for businesses managing multiple vehicles with centralized reporting</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <h2>Always Moving, Always Connected</h2>
+                <p>Vixa embodies The AA's "Always Moving" philosophy by transforming passive vehicle ownership into an active, informed partnership between driver and machine. By making complex vehicle data accessible and actionable, we're building the ultimate driving companion for the modern age.</p>
+                
+                <div style="margin: 40px 0;">
+                    <div style="display: flex; justify-content: center; gap: 12px; flex-wrap: wrap;">
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem;">IoT Product Design</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem;">Connected Car Technology</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem;">Data Visualization</span>
+                        <span style="background: rgba(255, 255, 255, 0.1); padding: 8px 16px; border-radius: 20px; font-size: 0.875rem;">User Experience</span>
+                    </div>
+                </div>
+                
+                <a href="#" class="back-to-top" onclick="scrollToTop(); return false;">
+                    <i class="fas fa-arrow-up" style="margin-right: 8px;"></i> Back to Top
+                </a>
+                
+                <p style="margin-top: 60px; font-size: 0.75rem; color: rgba(255, 255, 255, 0.5);">
+                    © 2024 Vixa Connected Car Platform Case Study. This project demonstrates The AA's "Always Moving" design philosophy applied to connected vehicle technology.
+                </p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+        
+        // Add animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all cards and sections
+            document.querySelectorAll('.role-card, .problem-card, .stat-card, .persona-card, .dashboard-item, .insight-card, .metric-card, .result-card, .learning-card, .process-step, .workshop-method, .audience-stat, .ideation-feature, .workshop-image, .principle-card, .wireframe-item, .moodboard-image, .mockup-image-item').forEach(card => {
+                observer.observe(card);
+            });
+
+            // Navigation active state
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                const linkPage = link.getAttribute('href');
+                if (currentPage === linkPage) {
+                    link.classList.add('active');
+                } else {
+                    link.classList.remove('active');
+                }
+            });
+        });
+    </script>
+
+</body>
+</html>

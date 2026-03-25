@@ -1,0 +1,1483 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Salesforce CRM SaaS UX/UI Design Case Study | Ian Akin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --salesforce-blue: #00A1E0;
+            --salesforce-dark-blue: #032D60;
+            --salesforce-light-blue: #E5F5FC;
+            --salesforce-green: #4BCA81;
+            --salesforce-purple: #8A33D9;
+            --salesforce-dark: #181818;
+            --salesforce-light: #FFFFFF;
+            --salesforce-gray: #706E6B;
+            --salesforce-light-gray: #F3F2F2;
+            --salesforce-border: #DDDBDA;
+            --transition: all 0.3s ease;
+            
+            /* Add colors from index.html for header */
+            --primary: #f8f9ff;
+            --secondary: #ffffff;
+            --accent: #4a6cf7;
+            --accent-light: #6a8aff;
+            --accent-pale: #eef1ff;
+            --text: #2d3748;
+            --text-light: #6b7280;
+            --text-lighter: #9ca3af;
+            --border: #e5e7eb;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+        
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--salesforce-dark);
+            line-height: 1.6;
+            background-color: var(--salesforce-light);
+            padding-top: 80px; /* Added for fixed header */
+        }
+        
+        /* Fixed Header Navigation - Same as index.html */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(74, 108, 247, 0.1);
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--accent);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .logo i {
+            font-size: 1.8rem;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 40px;
+            list-style: none;
+        }
+
+        .nav-link {
+            color: var(--text);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 1rem;
+            transition: var(--transition);
+            position: relative;
+            padding: 5px 0;
+        }
+
+        .nav-link:hover {
+            color: var(--accent);
+        }
+
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--accent);
+            transition: var(--transition);
+        }
+
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .nav-link.active {
+            color: var(--accent);
+        }
+
+        .nav-link.active::after {
+            width: 100%;
+        }
+        
+        /* Adjust case-study-header to account for fixed header */
+        .case-study-header {
+            background: linear-gradient(135deg, var(--salesforce-dark-blue) 0%, var(--salesforce-blue) 100%);
+            color: var(--salesforce-light);
+            padding: 80px 0 100px;
+            position: relative;
+            overflow: hidden;
+            margin-top: 0;
+        }
+        
+        .case-study-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('data:image/svg+xml,<svg width="120" height="120" xmlns="http://www.w3.org/2000/svg"><path d="M60 120C27.2 120 0 92.8 0 60S27.2 0 60 0s60 27.2 60 60-27.2 60-60 60zm0-20c22.1 0 40-17.9 40-40S82.1 20 60 20 20 37.9 20 60s17.9 40 40 40z" fill="%2300A1E0" fill-opacity="0.1"/></svg>');
+            opacity: 0.3;
+            z-index: 1;
+        }
+        
+        .header-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+            position: relative;
+            z-index: 2;
+        }
+        
+        .client-logo {
+            font-size: 2rem;
+            font-weight: 800;
+            margin-bottom: 30px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .client-logo i {
+            color: #FF5C35;
+            font-size: 2.5rem;
+        }
+        
+        .case-study-title {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 20px;
+            line-height: 1.2;
+            color: var(--salesforce-light);
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+        
+        .case-study-subtitle {
+            font-size: 1.5rem;
+            font-weight: 400;
+            color: rgba(255, 255, 255, 0.9);
+            max-width: 800px;
+            margin-bottom: 50px;
+        }
+        
+        .project-meta {
+            display: flex;
+            gap: 40px;
+            margin-top: 40px;
+            flex-wrap: wrap;
+        }
+        
+        .meta-item {
+            display: flex;
+            flex-direction: column;
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.15);
+            padding: 20px 25px;
+            border-radius: 12px;
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            min-width: 180px;
+        }
+        
+        .meta-label {
+            font-size: 0.9rem;
+            color: rgba(255, 255, 255, 0.8);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        .meta-value {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--salesforce-light);
+        }
+        
+        /* Main Content */
+        .case-study-content {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 80px 24px;
+        }
+        
+        .content-section {
+            margin-bottom: 100px;
+        }
+        
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 20px;
+            color: var(--salesforce-dark-blue);
+            position: relative;
+            display: inline-block;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            bottom: -8px;
+            left: 0;
+            width: 60px;
+            height: 4px;
+            background: var(--salesforce-blue);
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--salesforce-blue);
+            margin: 40px 0 20px;
+        }
+        
+        .section-text {
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--salesforce-gray);
+            margin-bottom: 30px;
+        }
+        
+        .highlight-box {
+            background-color: var(--salesforce-light-blue);
+            border-left: 4px solid var(--salesforce-blue);
+            padding: 30px;
+            border-radius: 0 8px 8px 0;
+            margin: 40px 0;
+        }
+        
+        .highlight-text {
+            font-size: 1.2rem;
+            font-weight: 500;
+            color: var(--salesforce-dark-blue);
+            line-height: 1.6;
+        }
+        
+        /* Design Process */
+        .design-process {
+            display: flex;
+            flex-direction: column;
+            gap: 80px;
+        }
+        
+        .process-step {
+            display: flex;
+            flex-direction: column;
+            gap: 30px;
+        }
+        
+        .step-header {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        
+        .step-number {
+            width: 50px;
+            height: 50px;
+            background-color: var(--salesforce-blue);
+            color: var(--salesforce-light);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+            box-shadow: 0 4px 15px rgba(0, 161, 224, 0.3);
+        }
+        
+        .step-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--salesforce-dark-blue);
+        }
+        
+        /* Image/Visual Styles */
+        .visual-container {
+            background-color: var(--salesforce-light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+            margin: 30px 0;
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08);
+            border: 1px solid var(--salesforce-border);
+        }
+        
+        .visual-title {
+            padding: 20px 30px;
+            background-color: white;
+            border-bottom: 1px solid var(--salesforce-border);
+            font-weight: 600;
+            color: var(--salesforce-dark);
+        }
+        
+        .visual-content {
+            padding: 40px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 400px;
+            background: white;
+        }
+        
+        /* Salesforce-specific visual elements */
+        .platform-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .platform-card {
+            background: white;
+            border-radius: 12px;
+            padding: 30px;
+            border: 1px solid var(--salesforce-border);
+            transition: var(--transition);
+        }
+        
+        .platform-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .platform-icon {
+            font-size: 2.5rem;
+            color: var(--salesforce-blue);
+            margin-bottom: 20px;
+        }
+        
+        .platform-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--salesforce-dark-blue);
+            margin-bottom: 15px;
+        }
+        
+        .comparison-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 40px 0;
+        }
+        
+        .comparison-item {
+            background: white;
+            border-radius: 8px;
+            padding: 25px;
+            border: 1px solid var(--salesforce-border);
+        }
+        
+        .comparison-label {
+            font-weight: 600;
+            color: var(--salesforce-dark-blue);
+            margin-bottom: 15px;
+            display: block;
+            font-size: 1.1rem;
+        }
+        
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .stat-item {
+            text-align: center;
+            padding: 30px 20px;
+            background: white;
+            border-radius: 12px;
+            border: 1px solid var(--salesforce-border);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--salesforce-blue);
+            margin-bottom: 10px;
+        }
+        
+        .stat-description {
+            color: var(--salesforce-gray);
+            font-size: 0.95rem;
+        }
+        
+        /* Improvement List */
+        .improvement-list {
+            list-style-type: none;
+            padding-left: 0;
+            margin: 30px 0;
+        }
+        
+        .improvement-item {
+            padding: 15px 0 15px 40px;
+            position: relative;
+            color: var(--salesforce-gray);
+            line-height: 1.6;
+            border-bottom: 1px solid var(--salesforce-border);
+        }
+        
+        .improvement-item:last-child {
+            border-bottom: none;
+        }
+        
+        .improvement-item::before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: var(--salesforce-green);
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+        
+        /* Outcome Section */
+        .outcome-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            margin: 50px 0;
+        }
+        
+        .stat-card {
+            background-color: var(--salesforce-light-blue);
+            border-radius: 12px;
+            padding: 40px 30px;
+            text-align: center;
+            border-top: 4px solid var(--salesforce-blue);
+        }
+        
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--salesforce-blue);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            font-size: 1.1rem;
+            color: var(--salesforce-gray);
+            font-weight: 500;
+        }
+        
+        /* Image styling - Updated for lightbox */
+        .case-study-image {
+            width: 100%;
+            height: auto;
+            border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            cursor: zoom-in;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .case-study-image:hover {
+            transform: scale(1.01);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15);
+        }
+        
+        .image-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-grid-two {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin: 30px 0;
+        }
+        
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--salesforce-gray);
+            margin-top: 10px;
+            font-size: 0.9rem;
+        }
+        
+        /* Page Comparison Styling */
+        .page-comparison {
+            margin: 60px 0;
+        }
+        
+        .page-title {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--salesforce-dark-blue);
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--salesforce-border);
+            padding-bottom: 10px;
+        }
+        
+        /* Footer */
+        .case-study-footer {
+            background-color: var(--salesforce-dark-blue);
+            color: var(--salesforce-light);
+            padding: 80px 0;
+            margin-top: 100px;
+        }
+        
+        .footer-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+        
+        .footer-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 40px;
+        }
+        
+        .footer-left h3 {
+            font-size: 1.8rem;
+            margin-bottom: 20px;
+        }
+        
+        .footer-left p {
+            color: rgba(255, 255, 255, 0.7);
+            max-width: 500px;
+        }
+        
+        .cta-button {
+            background-color: var(--salesforce-blue);
+            color: var(--salesforce-light);
+            border: none;
+            padding: 18px 36px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+        
+        .cta-button:hover {
+            background-color: #0086C3;
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 161, 224, 0.3);
+        }
+        
+        /* ===== LIGHTBOX STYLES ===== */
+        .lightbox {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.95);
+            z-index: 2000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+        
+        .lightbox.active {
+            display: flex;
+            opacity: 1;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .lightbox-content {
+            position: relative;
+            max-width: 90%;
+            max-height: 90%;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        
+        .lightbox-image {
+            max-width: 100%;
+            max-height: 80vh;
+            object-fit: contain;
+            border-radius: 4px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3);
+        }
+        
+        .lightbox-caption {
+            color: white;
+            text-align: center;
+            margin-top: 20px;
+            font-size: 1rem;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+        
+        .lightbox-close {
+            position: absolute;
+            top: -50px;
+            right: -10px;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2.5rem;
+            cursor: pointer;
+            transition: color 0.2s ease;
+            padding: 10px;
+            z-index: 2001;
+        }
+        
+        .lightbox-close:hover {
+            color: var(--salesforce-blue);
+        }
+        
+        .lightbox-nav {
+            position: absolute;
+            top: 50%;
+            width: 100%;
+            display: flex;
+            justify-content: space-between;
+            padding: 0 20px;
+            transform: translateY(-50%);
+            z-index: 2001;
+        }
+        
+        .lightbox-prev,
+        .lightbox-next {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1.8rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.2s ease;
+            backdrop-filter: blur(5px);
+        }
+        
+        .lightbox-prev:hover,
+        .lightbox-next:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: scale(1.1);
+        }
+        
+        .lightbox-counter {
+            position: absolute;
+            bottom: -40px;
+            left: 50%;
+            transform: translateX(-50%);
+            color: white;
+            font-size: 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 8px 16px;
+            border-radius: 20px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .case-study-title {
+                font-size: 2.5rem;
+            }
+            
+            .case-study-subtitle {
+                font-size: 1.2rem;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .comparison-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .platform-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .footer-content {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            .image-grid-two {
+                grid-template-columns: 1fr;
+            }
+            
+            .meta-item {
+                min-width: 140px;
+                padding: 15px 20px;
+            }
+            
+            .nav-menu {
+                gap: 20px;
+            }
+            
+            /* Lightbox responsive */
+            .lightbox-prev,
+            .lightbox-next {
+                width: 50px;
+                height: 50px;
+                font-size: 1.5rem;
+            }
+            
+            .lightbox-close {
+                top: -40px;
+                right: 0;
+                font-size: 2rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .case-study-title {
+                font-size: 2rem;
+            }
+            
+            .project-meta {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .section-title {
+                font-size: 1.8rem;
+            }
+            
+            .meta-item {
+                width: 100%;
+            }
+            
+            .nav-menu {
+                gap: 15px;
+            }
+            
+            /* Lightbox responsive */
+            .lightbox-prev,
+            .lightbox-next {
+                width: 40px;
+                height: 40px;
+                font-size: 1.2rem;
+            }
+            
+            .lightbox-content {
+                max-width: 95%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Fixed Header Navigation - Same as index.html -->
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                <i class="fas fa-palette"></i>
+                Ian Akin
+            </a>
+            
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About Me</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Lightbox Modal -->
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightboxClose">
+            <i class="fas fa-times"></i>
+        </button>
+        
+        <div class="lightbox-nav">
+            <button class="lightbox-prev" id="lightboxPrev">
+                <i class="fas fa-chevron-left"></i>
+            </button>
+            <button class="lightbox-next" id="lightboxNext">
+                <i class="fas fa-chevron-right"></i>
+            </button>
+        </div>
+        
+        <div class="lightbox-content">
+            <img src="" alt="" class="lightbox-image" id="lightboxImage">
+            <div class="lightbox-caption" id="lightboxCaption"></div>
+            <div class="lightbox-counter" id="lightboxCounter"></div>
+        </div>
+    </div>
+
+    <!-- Original Salesforce Header -->
+    <header class="case-study-header">
+        <div class="header-container">
+            <div class="client-logo">
+                <i class="fab fa-salesforce"></i>
+                Salesforce
+            </div>
+            
+            <h1 class="case-study-title">Salesforce CRM: Bridging Lightning & Trailhead Experiences</h1>
+            <p class="case-study-subtitle">A comprehensive UX/UI redesign case study focusing on creating a unified CRM experience by integrating Lightning's enterprise power with Trailhead's learning ecosystem</p>
+            
+            <div class="project-meta">
+                <div class="meta-item">
+                    <div class="meta-label">Client</div>
+                    <div class="meta-value">Salesforce</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Role</div>
+                    <div class="meta-value">Lead Product Designer</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Timeline</div>
+                    <div class="meta-value">8 Months</div>
+                </div>
+                <div class="meta-item">
+                    <div class="meta-label">Platform</div>
+                    <div class="meta-value">Web & Mobile</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="case-study-content">
+        <!-- Introduction -->
+        <section class="content-section">
+            <h2 class="section-title">Project Overview</h2>
+            <p class="section-text">Salesforce, as the world's leading CRM platform, needed to enhance the user experience for its two primary products: Lightning (the enterprise CRM interface) and Trailhead (the interactive learning platform). The objective was to establish a seamless connection between these experiences by amalgamating certain attributes and eliminating barriers where necessary.</p>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">The challenge: How might we bridge the gap between Salesforce Lightning's powerful enterprise capabilities and Trailhead's engaging learning environment to create a unified, intuitive CRM experience that serves both expert users and learners?</p>
+            </div>
+            
+            <div class="platform-grid">
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-bolt"></i>
+                    </div>
+                    <h3 class="platform-title">Salesforce Lightning</h3>
+                    <p class="section-text">Lightning components give users a client-server framework that accelerates development and app performance, ideal for use with Salesforce mobile app and Lightning Experience.</p>
+                </div>
+                <div class="platform-card">
+                    <div class="platform-icon">
+                        <i class="fas fa-graduation-cap"></i>
+                    </div>
+                    <h3 class="platform-title">Trailhead</h3>
+                    <p class="section-text">An interactive learning platform through the basic building blocks of the Salesforce platform. Users test their knowledge while earning points and badges to celebrate achievements.</p>
+                </div>
+            </div>
+            
+            <p class="section-text">This case study documents the end-to-end design process from initial research through to implementation, following Salesforce's design system principles and enterprise UX best practices.</p>
+        </section>
+
+        <!-- The Problem -->
+        <section class="content-section">
+            <h2 class="section-title">The Problem Statement</h2>
+            <p class="section-text">Salesforce faced significant user experience fragmentation between its enterprise CRM platform (Lightning) and its learning ecosystem (Trailhead). Users struggled with context switching, inconsistent interfaces, and disjointed workflows that hindered productivity and learning adoption.</p>
+            
+            <div class="stats-grid">
+                <div class="stat-item">
+                    <div class="stat-number">68%</div>
+                    <div class="stat-description">of users reported difficulty switching between Lightning and Trailhead</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">42%</div>
+                    <div class="stat-description">longer task completion time when using both platforms</div>
+                </div>
+                <div class="stat-item">
+                    <div class="stat-number">57%</div>
+                    <div class="stat-description">of new users abandoned Trailhead due to complex navigation</div>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">Key Issues Identified</h3>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Lack of Integration:</strong> Critical gap between Trailhead learning modules and Lightning practical application</li>
+                <li class="improvement-item"><strong>UI Inconsistency:</strong> Different design languages causing cognitive load and confusion</li>
+                <li class="improvement-item"><strong>Navigation Difficulties:</strong> Users struggled to find important information across platforms</li>
+                <li class="improvement-item"><strong>Design System Violations:</strong> Inconsistent application of Salesforce Lightning Design System</li>
+            </ul>
+        </section>
+
+        <!-- User Research -->
+        <section class="content-section">
+            <h2 class="section-title">User Research & Discovery</h2>
+            <p class="section-text">We conducted comprehensive research over 6 weeks, including user interviews with 45 Salesforce customers, surveys of 500+ users, and heuristic evaluations of both platforms.</p>
+            
+            <h3 class="section-subtitle">Target User Personas</h3>
+            
+            <div class="comparison-grid">
+                <div class="comparison-item">
+                    <span class="comparison-label">Enterprise Admin</span>
+                    <p class="section-text">Technical users managing complex Salesforce instances. Need powerful tools, customization options, and enterprise-grade reliability. Primary Lightning users.</p>
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-label">Business User</span>
+                    <p class="section-text">Sales, marketing, and service professionals using Salesforce daily. Need intuitive interfaces, quick access to information, and seamless workflows across devices.</p>
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-label">Learner/New User</span>
+                    <p class="section-text">Individuals building Salesforce skills through Trailhead. Need guided learning paths, contextual help, and gradual exposure to complex features.</p>
+                </div>
+                <div class="comparison-item">
+                    <span class="comparison-label">Developer</span>
+                    <p class="section-text">Technical users building custom solutions. Need API access, component libraries, and seamless transition between learning and implementation.</p>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">Research Insights</h3>
+            <p class="section-text">1. <strong>Context Switching Pain:</strong> Users spent significant mental energy switching between the "serious, numeric" Lightning interface and the "fun, colorful" Trailhead environment.</p>
+            <p class="section-text">2. <strong>Learning Application Gap:</strong> 72% of Trailhead learners struggled to apply newly learned concepts directly in Lightning without additional guidance.</p>
+            <p class="section-text">3. <strong>Brand Consistency Issue:</strong> Users perceived Lightning and Trailhead as separate companies due to vastly different visual languages.</p>
+            <p class="section-text">4. <strong>Enterprise Customization Needs:</strong> Large customers wanted to extend the unified design system to match their corporate branding while maintaining Salesforce's core usability.</p>
+        </section>
+
+        <!-- Design Objectives -->
+        <section class="content-section">
+            <h2 class="section-title">Design Objectives & Strategy</h2>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">Create a bridging experience between both products that incorporates the essence of gamification (vibrant visuals, mascots, friendly attitude) while maintaining Lightning's serious, numeric, monochromatic enterprise aesthetic.</p>
+            </div>
+            
+            <h3 class="section-subtitle">Strategic Goals</h3>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Develop a Unified Design Language:</strong> Create new UX, UI, and visual design patterns that preserve distinctive features from each platform while conveying a resilient branding experience</li>
+                <li class="improvement-item"><strong>Maintain Information Density:</strong> Ensure consistency in data displayed on each screen while upholding refined visual layouts and clear information architecture</li>
+                <li class="improvement-item"><strong>Implement Progressive Disclosure:</strong> Balance simplicity for new users with power features for experts through intelligent UI patterns</li>
+                <li class="improvement-item"><strong>Enable Brand Customization:</strong> Allow enterprise customers to apply their branding while maintaining Salesforce's core usability principles</li>
+            </ul>
+        </section>
+
+        <!-- UX Audit -->
+        <section class="content-section">
+            <h2 class="section-title">UX Audit & Analysis</h2>
+            <p class="section-text">We devoted an entire week to a deliberate and thorough examination of the present interfaces across both platforms. The audit focused on navigation patterns, information architecture, visual hierarchy, and interaction design.</p>
+            
+            <div class="visual-container">
+                <div class="visual-title">UX Audit Findings Dashboard</div>
+                <div class="visual-content">
+                    <div class="image-grid">
+                        <img src="https://ianakin.netlify.app/images/salesforce/audit.png" alt="Salesforce UX Audit" class="case-study-image" data-caption="Comprehensive audit of Lightning and Trailhead interfaces showing key improvement areas">
+                        <p class="image-caption">Comprehensive audit of Lightning and Trailhead interfaces showing key improvement areas</p>
+                    </div>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">Key Audit Findings</h3>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Navigation Complexity:</strong> Trailhead's learning navigation didn't align with Lightning's object-based navigation model</li>
+                <li class="improvement-item"><strong>Information Architecture Mismatch:</strong> Similar functions were organized differently across platforms</li>
+                <li class="improvement-item"><strong>Visual Hierarchy Issues:</strong> Critical actions were buried in both interfaces</li>
+                <li class="improvement-item"><strong>Responsive Design Gaps:</strong> Mobile experiences varied significantly between platforms</li>
+                <li class="improvement-item"><strong>Accessibility Inconsistencies:</strong> Different WCAG compliance levels between Lightning and Trailhead</li>
+            </ul>
+        </section>
+
+        <!-- Design Process -->
+        <section class="content-section">
+            <h2 class="section-title">Design Process & Iterations</h2>
+            
+            <div class="design-process">
+                <!-- Step 1: Design System Analysis -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">1</div>
+                        <h3 class="step-title">Design System Synthesis</h3>
+                    </div>
+                    
+                    <p class="section-text">We began by analyzing Salesforce Lightning Design System (SLDS) components and Trailhead's visual language to identify common patterns and divergent elements that needed reconciliation.</p>
+                </div>
+                
+                <!-- Step 2: Login & Onboarding -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">2</div>
+                        <h3 class="step-title">Unified Login & Onboarding Experience</h3>
+                    </div>
+                    
+                    <p class="section-text">We redesigned the login and onboarding flows to provide a seamless entry point that recognizes user context (learner vs. enterprise user) and tailors the initial experience accordingly.</p>
+                    
+                    <div class="comparison-grid">
+                        <div class="comparison-item">
+                            <span class="comparison-label">Before: Separate Login Experiences</span>
+                            <p class="section-text">Distinct login pages for Lightning and Trailhead created cognitive separation from the start. Users needed different credentials and encountered different branding.</p>
+                        </div>
+                        <div class="comparison-item">
+                            <span class="comparison-label">After: Unified Smart Login</span>
+                            <p class="section-text">Single sign-on with contextual detection. The system recognizes user type and customizes the dashboard view while maintaining access to all platform features.</p>
+                        </div>
+                    </div>
+                    
+                    <div class="highlight-box">
+                        <p class="highlight-text">"Blaze your trail to customer success." - The new unified value proposition that bridges learning and doing.</p>
+                    </div>
+                </div>
+                
+                <!-- Step 3: Profile Integration -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">3</div>
+                        <h3 class="step-title">Integrated User Profile System</h3>
+                    </div>
+                    
+                    <p class="section-text">We created a unified profile system that combines Lightning's professional information with Trailhead's learning achievements, providing a complete view of each user's capabilities and progress.</p>
+                    
+                    <div class="visual-container">
+                        <div class="visual-title">Redesigned Profile Interface</div>
+                        <div class="visual-content">
+                            <div class="image-grid-two">
+                                <img src="https://ianakin.netlify.app/images/salesforce/login1.png" alt="Old Login Design" class="case-study-image" data-caption="Old login design - separate pages for Lightning and Trailhead">
+                                <img src="https://ianakin.netlify.app/images/salesforce/login2.png" alt="New Unified Login" class="case-study-image" data-caption="New unified login - seamless integration of professional and learning profiles">
+                            </div>
+                            <p class="image-caption">Login page redesign showing integration of professional data and learning achievements</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Step 4: Navigation Redesign -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">4</div>
+                        <h3 class="step-title">Intelligent Navigation System</h3>
+                    </div>
+                    
+                    <p class="section-text">We developed an adaptive navigation system that learns from user behavior, surfaces relevant Trailhead modules within Lightning workflows, and provides contextual learning opportunities.</p>
+                    
+                    <ul class="improvement-list">
+                        <li class="improvement-item"><strong>Contextual Learning:</strong> Relevant Trailhead modules appear when users encounter complex features</li>
+                        <li class="improvement-item"><strong>Unified Search:</strong> Single search bar finds records, modules, help articles, and colleagues</li>
+                        <li class="improvement-item"><strong>Progressive Complexity:</strong> Interface adapts based on user expertise level</li>
+                        <li class="improvement-item"><strong>Customizable Workspaces:</strong> Users can create personalized views combining Lightning and Trailhead components</li>
+                    </ul>
+                </div>
+                
+                <!-- Step 5: Customization Framework -->
+                <div class="process-step">
+                    <div class="step-header">
+                        <div class="step-number">5</div>
+                        <h3 class="step-title">Enterprise Brand Customization</h3>
+                    </div>
+                    
+                    <p class="section-text">We extended the design system to support enterprise branding while maintaining Salesforce's core usability patterns, allowing companies like The Home Depot and Coca-Cola to apply their visual identity.</p>
+                    
+                    <div class="visual-container">
+                        <div class="visual-title">Brand Customization Examples</div>
+                        <div class="visual-content">
+                            <div class="image-grid-two">
+                                <img src="https://ianakin.netlify.app/images/salesforce/home.png" alt="The Home Depot Brand Customization" class="case-study-image" data-caption="The Home Depot brand customization - applying corporate colors while maintaining Salesforce usability">
+                                <img src="https://ianakin.netlify.app/images/salesforce/coke.png" alt="Coca-Cola Brand Customization" class="case-study-image" data-caption="Coca-Cola brand customization - region-specific interfaces for global markets">
+                            </div>
+                            <p class="image-caption">Example of enterprise brand customization using the extended design system</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Redesigns -->
+        <section class="content-section">
+            <h2 class="section-title">Key Page Redesigns</h2>
+            <p class="section-text">The following pages demonstrate the power of our bridging experience between Lightning's enterprise functionality and Trailhead's engaging learning environment.</p>
+            
+            <!-- Profile Page -->
+            <div class="page-comparison">
+                <h3 class="page-title">Profile Page Redesign</h3>
+                <p class="section-text">As a perfect example of the bridging experience between two worlds, the profile page demonstrates how we integrated professional CRM data with learning achievements to create a holistic user identity.</p>
+                
+                <div class="visual-container">
+                    <div class="visual-title">Profile Page: Old vs. New</div>
+                    <div class="visual-content">
+                        <div class="image-grid-two">
+                            <img src="https://ianakin.netlify.app/images/salesforce/profile1.png" alt="Old Profile Design" class="case-study-image" data-caption="Old profile design - separate professional and learning profiles">
+                            <img src="https://ianakin.netlify.app/images/salesforce/profile2.png" alt="New Unified Profile" class="case-study-image" data-caption="New unified profile - combined professional data, learning achievements, and social elements">
+                        </div>
+                        <p class="image-caption">Profile page redesign showing integration of professional data, learning achievements, and social elements</p>
+                    </div>
+                </div>
+                
+                <h4 class="section-subtitle">Key Improvements</h4>
+                <ul class="improvement-list">
+                    <li class="improvement-item"><strong>Unified Identity:</strong> Combined professional information with Trailhead badges and achievements</li>
+                    <li class="improvement-item"><strong>Social Integration:</strong> Added followers, connections, and team collaboration features</li>
+                    <li class="improvement-item"><strong>Visual Hierarchy:</strong> Improved information architecture with clear sections for different data types</li>
+                    <li class="improvement-item"><strong>Gamification Elements:</strong> Integrated Trailhead's achievement system directly into the professional profile</li>
+                </ul>
+            </div>
+            
+            <!-- Setup Page -->
+            <div class="page-comparison">
+                <h3 class="page-title">Setup Page Redesign</h3>
+                <p class="section-text">The setup page was redesigned to focus on making key administration areas stand out while maintaining enterprise-level functionality and security.</p>
+                
+                <div class="visual-container">
+                    <div class="visual-title">Setup Page: Old vs. New</div>
+                    <div class="visual-content">
+                        <div class="image-grid-two">
+                            <img src="https://ianakin.netlify.app/images/salesforce/setup1.png" alt="Old Setup Design" class="case-study-image" data-caption="Old setup design - complex navigation and buried features">
+                            <img src="https://ianakin.netlify.app/images/salesforce/setup2.png" alt="New Setup Design" class="case-study-image" data-caption="New setup design - improved visual hierarchy and key feature accessibility">
+                        </div>
+                        <p class="image-caption">Setup page redesign focusing on visual hierarchy and key feature accessibility</p>
+                    </div>
+                </div>
+                
+                <h4 class="section-subtitle">Key Improvements</h4>
+                <ul class="improvement-list">
+                    <li class="improvement-item"><strong>Visual Clarity:</strong> Enhanced typography and spacing for better readability</li>
+                    <li class="improvement-item"><strong>Feature Discovery:</strong> Key administration tools are now more prominent and accessible</li>
+                    <li class="improvement-item"><strong>Consistent Navigation:</strong> Unified navigation patterns with the rest of the platform</li>
+                    <li class="improvement-item"><strong>Contextual Help:</strong> Added inline guidance and Trailhead learning links for complex settings</li>
+                </ul>
+            </div>
+            
+            <!-- Listing Page -->
+            <div class="page-comparison">
+                <h3 class="page-title">Listing Page Redesign</h3>
+                <p class="section-text">As part of the visual design update, we optimized space above the fold by removing unnecessary pixels and lines of code. This enhanced the user experience by allowing greater visibility of content while maintaining hierarchical structures.</p>
+                
+                <div class="visual-container">
+                    <div class="visual-title">Listing Page: Old vs. New</div>
+                    <div class="visual-content">
+                        <div class="image-grid-two">
+                            <img src="https://ianakin.netlify.app/images/salesforce/listing1.png" alt="Old Listing Design" class="case-study-image" data-caption="Old listing design - cluttered interface with unnecessary visual elements">
+                            <img src="https://ianakin.netlify.app/images/salesforce/listing2.png" alt="New Listing Design" class="case-study-image" data-caption="New listing design - clean interface with improved information density">
+                        </div>
+                        <p class="image-caption">Listing page redesign showing improved information density and visual hierarchy</p>
+                    </div>
+                </div>
+                
+                <h4 class="section-subtitle">Key Improvements</h4>
+                <ul class="improvement-list">
+                    <li class="improvement-item"><strong>Space Optimization:</strong> Removed unnecessary visual clutter to increase content visibility</li>
+                    <li class="improvement-item"><strong>Information Hierarchy:</strong> Improved typography and spacing for better data processing</li>
+                    <li class="improvement-item"><strong>Action Accessibility:</strong> Key actions are now more prominent and easier to access</li>
+                    <li class="improvement-item"><strong>Consistent Visual Language:</strong> Applied unified design system components throughout</li>
+                </ul>
+            </div>
+            
+            <!-- App Launcher Page -->
+            <div class="page-comparison">
+                <h3 class="page-title">App Launcher Page Redesign</h3>
+                <p class="section-text">We introduced more colors and standout icons to the App Launcher, making it easier for users to find and launch their most-used applications while maintaining enterprise-grade usability.</p>
+                
+                <div class="visual-container">
+                    <div class="visual-title">App Launcher Page: Old vs. New</div>
+                    <div class="visual-content">
+                        <div class="image-grid-two">
+                            <img src="https://ianakin.netlify.app/images/salesforce/app1.png" alt="Old App Launcher Design" class="case-study-image" data-caption="Old app launcher - monochromatic and difficult to scan">
+                            <img src="https://ianakin.netlify.app/images/salesforce/app2.png" alt="New App Launcher Design" class="case-study-image" data-caption="New app launcher - vibrant colors and improved iconography for faster recognition">
+                        </div>
+                        <p class="image-caption">App Launcher redesign with improved visual hierarchy and iconography</p>
+                    </div>
+                </div>
+                
+                <h4 class="section-subtitle">Key Improvements</h4>
+                <ul class="improvement-list">
+                    <li class="improvement-item"><strong>Visual Appeal:</strong> Introduced more vibrant colors while maintaining professional aesthetic</li>
+                    <li class="improvement-item"><strong>Icon Clarity:</strong> Enhanced iconography for better recognition and faster scanning</li>
+                    <li class="improvement-item"><strong>Personalization:</strong> Added ability to customize and prioritize frequently used apps</li>
+                    <li class="improvement-item"><strong>Search Integration:</strong> Improved search functionality with contextual suggestions</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Final Solution -->
+        <section class="content-section">
+            <h2 class="section-title">Final Solution & Key Features</h2>
+            
+            <h3 class="section-subtitle">1. Adaptive Interface System</h3>
+            <p class="section-text">The interface automatically adjusts based on user role, expertise level, and current task. New users see guided workflows with embedded learning, while experts get advanced tools and shortcuts.</p>
+            
+            <h3 class="section-subtitle">2. Unified Component Library</h3>
+            <p class="section-text">A comprehensive set of React components that implement the bridging design language, supporting both enterprise data density requirements and engaging learning interactions.</p>
+            
+            <h3 class="section-subtitle">3. Contextual Learning Integration</h3>
+            <p class="section-text">Trailhead modules and badges appear within Lightning workflows at teachable moments, reducing the learning-to-application gap from days to minutes.</p>
+            
+            <h3 class="section-subtitle">4. Enterprise Customization Engine</h3>
+            <p class="section-text">A theming system that allows enterprises to apply their brand colors, logos, and typography while maintaining Salesforce's usability standards and accessibility compliance.</p>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">The solution maintains Lightning's enterprise-grade reliability and performance while incorporating Trailhead's engaging, human-centered design principles—creating a CRM experience that grows with users from their first day to their thousandth.</p>
+            </div>
+        </section>
+
+        <!-- Results & Impact -->
+        <section class="content-section">
+            <h2 class="section-title">Results & Business Impact</h2>
+            <p class="section-text">The redesigned unified experience was rolled out to Salesforce's 150,000+ customers in phases over 6 months, with remarkable improvements in key metrics:</p>
+            
+            <div class="outcome-stats">
+                <div class="stat-card">
+                    <div class="stat-number">47%</div>
+                    <div class="stat-label">Increase in Trailhead adoption among enterprise users</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">62%</div>
+                    <div class="stat-label">Reduction in support tickets for navigation issues</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">3.8x</div>
+                    <div class="stat-label">More badges earned per user per month</div>
+                </div>
+                <div class="stat-card">
+                    <div class="stat-number">29%</div>
+                    <div class="stat-label">Faster onboarding for new Salesforce administrators</div>
+                </div>
+            </div>
+            
+            <h3 class="section-subtitle">Enterprise Adoption & Customization</h3>
+            <p class="section-text">Major Salesforce customers successfully implemented brand customization using the new design system extension:</p>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>The Home Depot:</strong> Implemented brand colors and customized navigation for 40,000 store associates</li>
+                <li class="improvement-item"><strong>Coca-Cola:</strong> Created region-specific interfaces for 200+ global markets</li>
+                <li class="improvement-item"><strong>Financial Services Client:</strong> Reduced user training time by 35% through contextual learning</li>
+                <li class="improvement-item"><strong>Healthcare Provider:</strong> Achieved WCAG 2.1 AA compliance while maintaining brand identity</li>
+            </ul>
+        </section>
+
+        <!-- Lessons Learned -->
+        <section class="content-section">
+            <h2 class="section-title">Key Learnings & Insights</h2>
+            
+            <div class="highlight-box">
+                <p class="highlight-text">Enterprises that possess potent and intricate products have robust visual languages founded on regulations and principles applied to dynamic design systems. The key to success lies in constructing systems that are sturdy yet adaptable.</p>
+            </div>
+            
+            <h3 class="section-subtitle">Design System Philosophy</h3>
+            <p class="section-text">One of the valuable insights gained from this project is the ability to comprehend existing system rules and subsequently incorporate new elements that seamlessly integrate. This approach enables various departments to expedite their work and ensure visual uniformity when novel features are introduced.</p>
+            
+            <h3 class="section-subtitle">Enterprise UX Considerations</h3>
+            
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Progressive Complexity:</strong> Enterprise tools must serve both novices and experts simultaneously</li>
+                <li class="improvement-item"><strong>Brand Elasticity:</strong> Design systems must stretch to accommodate corporate branding without breaking</li>
+                <li class="improvement-item"><strong>Context Preservation:</strong> Users should never lose their place when switching between learning and doing</li>
+                <li class="improvement-item"><strong>Performance Parity:</strong> Engaging interfaces must maintain enterprise-grade performance standards</li>
+            </ul>
+            
+            <p class="section-text">The opportunity to design within a meticulously crafted design system was highly valuable. The exclusion of the design process from the initial "blank paper moment" significantly expedited development while maintaining quality and consistency across one of the world's most complex SaaS platforms.</p>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="case-study-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <div class="footer-left">
+                    <h3>Interested in Enterprise UX Design?</h3>
+                    <p>I specialize in creating unified user experiences for complex SaaS platforms and enterprise systems. Let's connect to discuss how we can improve your product's user experience.</p>
+                </div>
+                
+                <a href="contact.html" class="cta-button">
+                    <i class="fas fa-envelope"></i> Contact Me
+                </a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation for stats counting up
+        document.addEventListener('DOMContentLoaded', function() {
+            const statNumbers = document.querySelectorAll('.stat-number');
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const statNumber = entry.target;
+                        const originalText = statNumber.textContent;
+                        const targetValue = parseFloat(originalText);
+                        const suffix = originalText.replace(/[0-9.x]/g, '');
+                        
+                        let startValue = 0;
+                        const duration = 2000;
+                        const increment = targetValue / (duration / 16);
+                        
+                        const timer = setInterval(() => {
+                            startValue += increment;
+                            if (startValue >= targetValue) {
+                                statNumber.textContent = originalText;
+                                clearInterval(timer);
+                            } else {
+                                if (originalText.includes('x')) {
+                                    statNumber.textContent = startValue.toFixed(1) + 'x';
+                                } else {
+                                    statNumber.textContent = Math.floor(startValue) + suffix;
+                                }
+                            }
+                        }, 16);
+                        
+                        observer.unobserve(statNumber);
+                    }
+                });
+            }, { threshold: 0.5 });
+            
+            statNumbers.forEach(stat => {
+                observer.observe(stat);
+            });
+            
+            // Set active navigation link
+            const currentPage = window.location.pathname.split('/').pop();
+            const navLinks = document.querySelectorAll('.nav-link');
+            
+            navLinks.forEach(link => {
+                if (link.getAttribute('href') === 'index.html') {
+                    link.classList.remove('active');
+                }
+            });
+            
+            // ===== LIGHTBOX FUNCTIONALITY =====
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const lightboxCaption = document.getElementById('lightboxCaption');
+            const lightboxCounter = document.getElementById('lightboxCounter');
+            const lightboxClose = document.getElementById('lightboxClose');
+            const lightboxPrev = document.getElementById('lightboxPrev');
+            const lightboxNext = document.getElementById('lightboxNext');
+            
+            let currentImageIndex = 0;
+            let images = [];
+            
+            // Collect all images with class 'case-study-image'
+            function collectImages() {
+                images = Array.from(document.querySelectorAll('.case-study-image'));
+                return images;
+            }
+            
+            // Open lightbox with specific image
+            function openLightbox(index) {
+                currentImageIndex = index;
+                const image = images[currentImageIndex];
+                lightboxImage.src = image.src;
+                lightboxCaption.textContent = image.getAttribute('data-caption') || image.alt;
+                lightboxCounter.textContent = `${currentImageIndex + 1} / ${images.length}`;
+                lightbox.classList.add('active');
+                document.body.style.overflow = 'hidden'; // Prevent scrolling
+            }
+            
+            // Close lightbox
+            function closeLightbox() {
+                lightbox.classList.remove('active');
+                document.body.style.overflow = ''; // Restore scrolling
+            }
+            
+            // Navigate to next image
+            function nextImage() {
+                currentImageIndex = (currentImageIndex + 1) % images.length;
+                openLightbox(currentImageIndex);
+            }
+            
+            // Navigate to previous image
+            function prevImage() {
+                currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+                openLightbox(currentImageIndex);
+            }
+            
+            // Initialize lightbox
+            function initLightbox() {
+                collectImages();
+                
+                // Add click event to all images
+                images.forEach((image, index) => {
+                    image.addEventListener('click', () => openLightbox(index));
+                });
+                
+                // Lightbox controls
+                lightboxClose.addEventListener('click', closeLightbox);
+                lightboxPrev.addEventListener('click', prevImage);
+                lightboxNext.addEventListener('click', nextImage);
+                
+                // Close on background click
+                lightbox.addEventListener('click', (e) => {
+                    if (e.target === lightbox) {
+                        closeLightbox();
+                    }
+                });
+                
+                // Keyboard navigation
+                document.addEventListener('keydown', (e) => {
+                    if (!lightbox.classList.contains('active')) return;
+                    
+                    switch(e.key) {
+                        case 'Escape':
+                            closeLightbox();
+                            break;
+                        case 'ArrowRight':
+                            nextImage();
+                            break;
+                        case 'ArrowLeft':
+                            prevImage();
+                            break;
+                    }
+                });
+                
+                // Swipe support for mobile
+                let touchStartX = 0;
+                let touchEndX = 0;
+                
+                lightbox.addEventListener('touchstart', (e) => {
+                    touchStartX = e.changedTouches[0].screenX;
+                });
+                
+                lightbox.addEventListener('touchend', (e) => {
+                    touchEndX = e.changedTouches[0].screenX;
+                    handleSwipe();
+                });
+                
+                function handleSwipe() {
+                    const swipeThreshold = 50;
+                    const diff = touchStartX - touchEndX;
+                    
+                    if (Math.abs(diff) > swipeThreshold) {
+                        if (diff > 0) {
+                            // Swipe left - next image
+                            nextImage();
+                        } else {
+                            // Swipe right - previous image
+                            prevImage();
+                        }
+                    }
+                }
+            }
+            
+            // Initialize lightbox when page loads
+            initLightbox();
+        });
+    </script>
+</body>
+</html>

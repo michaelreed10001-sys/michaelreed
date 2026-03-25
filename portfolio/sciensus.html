@@ -1,0 +1,699 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sciensus · Patient PSP app (greenfield) | Ian Akin</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --sciensus-primary: #0057a3;        /* deep trustworthy blue */
+            --sciensus-secondary: #00a88f;       /* vibrant teal – health/wellbeing */
+            --sciensus-accent: #6c4c9a;          /* purple – innovation/patient focus */
+            --sciensus-dark: #0A2A33;
+            --sciensus-light: #FFFFFF;
+            --sciensus-gray: #546a7a;
+            --sciensus-light-gray: #f3f6f9;
+            --sciensus-border: #d9e1e8;
+            --transition: all 0.3s ease;
+            --primary: #f8f9ff;
+            --secondary: #ffffff;
+            --accent: #4a6cf7;
+            --accent-light: #6a8aff;
+            --accent-pale: #eef1ff;
+            --text: #1e2f3e;
+            --text-light: #546a7a;
+            --text-lighter: #9ca3af;
+            --border: #e5e7eb;
+            --card-shadow: 0 8px 30px rgba(0, 0, 0, 0.05);
+            --card-shadow-hover: 0 20px 40px rgba(0, 0, 0, 0.08);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+            color: var(--sciensus-dark);
+            line-height: 1.6;
+            background-color: var(--sciensus-light);
+            padding-top: 80px;
+        }
+
+        .main-header {
+            position: fixed; top: 0; left: 0; width: 100%;
+            background: #ffffff; z-index: 1000;
+            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.08);
+            border-bottom: 1px solid rgba(0,87,163,0.15);
+        }
+
+        .nav-container {
+            max-width: 1400px; margin: 0 auto; padding: 0 24px;
+            display: flex; justify-content: space-between; align-items: center; height: 80px;
+        }
+
+        .logo {
+            font-size: 1.5rem; font-weight: 700; color: var(--sciensus-primary);
+            text-decoration: none; display: flex; align-items: center; gap: 10px;
+        }
+
+        .logo i { font-size: 1.8rem; }
+
+        .nav-menu { display: flex; gap: 40px; list-style: none; }
+
+        .nav-link {
+            color: var(--text); text-decoration: none; font-weight: 500;
+            font-size: 1rem; transition: var(--transition); position: relative; padding: 5px 0;
+        }
+
+        .nav-link:hover { color: var(--sciensus-primary); }
+
+        .nav-link::after {
+            content: ''; position: absolute; bottom: 0; left: 0;
+            width: 0; height: 2px; background: var(--sciensus-primary); transition: var(--transition);
+        }
+
+        .nav-link:hover::after { width: 100%; }
+        .nav-link.active { color: var(--sciensus-primary); }
+        .nav-link.active::after { width: 100%; }
+
+        .lightbox {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.95); z-index: 9999;
+            justify-content: center; align-items: center; opacity: 0; transition: opacity 0.3s ease;
+        }
+
+        .lightbox.active { display: flex; opacity: 1; }
+
+        .lightbox-content {
+            max-width: 90%; max-height: 90%; position: relative; animation: lightboxFadeIn 0.3s ease;
+        }
+
+        .lightbox-content img {
+            width: 100%; height: auto; max-height: 85vh; object-fit: contain;
+            border-radius: 8px; box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+        }
+
+        .lightbox-close {
+            position: absolute; top: -40px; right: 0;
+            background: rgba(255, 255, 255, 0.2); border: none; color: white;
+            font-size: 1.5rem; width: 40px; height: 40px; border-radius: 50%;
+            cursor: pointer; transition: var(--transition); display: flex;
+            align-items: center; justify-content: center;
+        }
+
+        .lightbox-close:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.1); }
+
+        .lightbox-nav {
+            position: absolute; top: 50%; width: 100%; display: flex;
+            justify-content: space-between; padding: 0 20px;
+            transform: translateY(-50%); pointer-events: none;
+        }
+
+        .lightbox-nav button {
+            pointer-events: auto; background: rgba(255, 255, 255, 0.2); border: none;
+            color: white; font-size: 1.5rem; width: 50px; height: 50px; border-radius: 50%;
+            cursor: pointer; transition: var(--transition); display: flex;
+            align-items: center; justify-content: center;
+        }
+
+        .lightbox-nav button:hover { background: rgba(255, 255, 255, 0.3); transform: scale(1.1); }
+
+        .lightbox-caption {
+            position: absolute; bottom: -40px; left: 0; width: 100%;
+            text-align: center; color: white; font-size: 0.9rem; padding: 10px;
+            background: rgba(0, 0, 0, 0.5); border-radius: 8px;
+        }
+
+        @keyframes lightboxFadeIn {
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        .clickable-image {
+            cursor: pointer; transition: var(--transition);
+            position: relative; border-radius: 8px; overflow: hidden;
+        }
+
+        .clickable-image:hover { transform: translateY(-2px); box-shadow: 0 8px 25px rgba(0,0,0,0.15); }
+
+        .clickable-image:hover::after {
+            content: ''; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+            background: rgba(0,87,163,0.1); border-radius: inherit;
+        }
+
+        .clickable-image::before {
+            content: '🔍'; position: absolute; top: 10px; right: 10px;
+            background: rgba(255, 255, 255, 0.9); width: 36px; height: 36px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1rem; opacity: 0; transition: var(--transition); z-index: 2;
+        }
+
+        .clickable-image:hover::before { opacity: 1; }
+
+        .userflow-intro {
+            font-weight: 600; margin-bottom: 16px; color: var(--sciensus-dark);
+            font-size: 1.2rem; line-height: 1.5;
+        }
+
+        .case-study-header {
+            background: var(--sciensus-primary); color: var(--sciensus-light);
+            padding: 100px 0 80px; position: relative; overflow: hidden; margin-top: -80px;
+        }
+
+        .case-study-header::before {
+            content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(145deg, var(--sciensus-primary) 0%, #003d7a 100%); z-index: 1;
+        }
+
+        .header-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; position: relative; z-index: 2; }
+
+        .case-study-title {
+            font-size: 3.5rem; font-weight: 800; margin-bottom: 20px; line-height: 1.2;
+            color: var(--sciensus-light); text-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .case-study-subtitle {
+            font-size: 1.5rem; font-weight: 400; color: rgba(255, 255, 255, 0.9);
+            max-width: 800px; margin-bottom: 40px;
+        }
+
+        .project-meta { display: flex; gap: 40px; margin-top: 40px; flex-wrap: wrap; }
+
+        .meta-item {
+            display: flex; flex-direction: column; gap: 8px;
+            background: rgba(255, 255, 255, 0.15); padding: 20px 25px; border-radius: 12px;
+            backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.2); min-width: 180px;
+        }
+
+        .meta-label { font-size: 0.9rem; color: rgba(255, 255, 255, 0.8); text-transform: uppercase; letter-spacing: 1px; }
+        .meta-value { font-size: 1.2rem; font-weight: 600; color: var(--sciensus-light); }
+
+        .case-study-content { max-width: 900px; margin: 0 auto; padding: 80px 24px; }
+        .content-section { margin-bottom: 100px; }
+
+        .section-title {
+            font-size: 2.5rem; font-weight: 700; margin-bottom: 20px; color: var(--sciensus-dark);
+            position: relative; display: inline-block;
+        }
+
+        .section-title::after {
+            content: ''; position: absolute; bottom: -8px; left: 0;
+            width: 60px; height: 4px; background: var(--sciensus-primary); border-radius: 2px;
+        }
+
+        .section-subtitle { font-size: 1.5rem; font-weight: 600; color: var(--sciensus-primary); margin: 40px 0 20px; }
+        .section-text { font-size: 1.1rem; line-height: 1.7; color: var(--sciensus-gray); margin-bottom: 30px; }
+
+        .highlight-box {
+            background-color: var(--sciensus-light-gray); border-left: 4px solid var(--sciensus-primary);
+            padding: 30px; border-radius: 0 8px 8px 0; margin: 40px 0;
+        }
+
+        .highlight-text { font-size: 1.2rem; font-weight: 500; color: var(--sciensus-dark); line-height: 1.6; }
+        .design-process { display: flex; flex-direction: column; gap: 80px; }
+        .process-step { display: flex; flex-direction: column; gap: 30px; }
+        .step-header { display: flex; align-items: center; gap: 20px; }
+
+        .step-number {
+            width: 50px; height: 50px; background-color: var(--sciensus-primary); color: white;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            font-size: 1.5rem; font-weight: 700; flex-shrink: 0; box-shadow: 0 4px 15px rgba(0,87,163,0.3);
+        }
+
+        .step-title { font-size: 1.8rem; font-weight: 700; color: var(--sciensus-dark); }
+
+        .visual-container {
+            background-color: var(--sciensus-light-gray); border-radius: 12px; overflow: hidden;
+            margin: 30px 0; box-shadow: 0 8px 30px rgba(0, 0, 0, 0.08); border: 1px solid var(--sciensus-border);
+        }
+
+        .visual-title {
+            padding: 20px 30px; background-color: white; border-bottom: 1px solid var(--sciensus-border);
+            font-weight: 600; color: var(--sciensus-dark);
+        }
+
+        .visual-content {
+            padding: 40px; display: flex; justify-content: center;
+            align-items: center; min-height: 400px; background: white;
+        }
+
+        .flow-diagram { width: 100%; display: flex; flex-direction: column; align-items: center; gap: 20px; }
+
+        .flow-node {
+            background-color: white; padding: 25px 40px; border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08); font-weight: 600; color: var(--sciensus-dark);
+            border: 2px solid var(--sciensus-border); position: relative; width: 80%; text-align: center;
+        }
+
+        .flow-node::after {
+            content: '↓'; position: absolute; bottom: -30px; left: 50%; transform: translateX(-50%);
+            font-size: 1.5rem; color: var(--sciensus-primary);
+        }
+
+        .flow-node:last-child::after { display: none; }
+
+        .case-study-image {
+            width: 100%; height: auto; border-radius: 8px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); display: block;
+        }
+
+        .image-grid { display: grid; grid-template-columns: 1fr; gap: 30px; margin: 30px 0; }
+        .image-grid-two { display: grid; grid-template-columns: repeat(2, 1fr); gap: 30px; margin: 30px 0; }
+        .image-grid-2x3 { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin: 30px 0; }
+
+        .image-caption {
+            text-align: center; font-style: italic; color: var(--sciensus-gray); margin-top: 10px; font-size: 0.9rem;
+        }
+
+        .outcome-stats {
+            display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 30px; margin: 50px 0;
+        }
+
+        .stat-card {
+            background-color: var(--sciensus-light-gray); border-radius: 12px; padding: 40px 30px;
+            text-align: center; border-top: 4px solid var(--sciensus-primary);
+        }
+
+        .stat-number { font-size: 3rem; font-weight: 800; color: var(--sciensus-primary); margin-bottom: 10px; }
+        .stat-label { font-size: 1.1rem; color: var(--sciensus-gray); font-weight: 500; }
+
+        .improvement-list { list-style-type: none; padding-left: 0; margin: 30px 0; }
+
+        .improvement-item {
+            padding: 15px 0 15px 40px; position: relative; color: var(--sciensus-gray);
+            line-height: 1.6; border-bottom: 1px solid var(--sciensus-border);
+        }
+
+        .improvement-item:last-child { border-bottom: none; }
+
+        .improvement-item::before {
+            content: "→"; position: absolute; left: 0;
+            color: var(--sciensus-primary); font-weight: bold; font-size: 1.2rem;
+        }
+
+        .case-study-footer {
+            background-color: var(--sciensus-dark); color: white;
+            padding: 40px 0; margin-top: 100px; text-align: center;
+        }
+
+        .footer-container { max-width: 1200px; margin: 0 auto; padding: 0 24px; }
+        .footer-content { display: flex; justify-content: center; align-items: center; }
+
+        .back-to-top {
+            background-color: rgba(255,255,255,0.15); color: white; border: none;
+            padding: 15px 30px; border-radius: 50px; font-weight: 600; font-size: 1rem;
+            cursor: pointer; transition: var(--transition); text-decoration: none;
+            display: inline-flex; align-items: center; gap: 10px;
+        }
+
+        .back-to-top:hover { background-color: rgba(255,255,255,0.25); transform: translateY(-3px); }
+
+        .persona-grid {
+            display: grid; grid-template-columns: repeat(3, 1fr); gap: 25px; margin: 40px 0;
+        }
+
+        .persona-card {
+            background: white; border-radius: 16px; box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            border: 1px solid var(--sciensus-border); overflow: hidden; transition: var(--transition);
+        }
+        .persona-card:hover { transform: translateY(-4px); box-shadow: 0 20px 40px rgba(0,87,163,0.08); border-color: var(--sciensus-primary); }
+        .persona-header { background: linear-gradient(145deg, var(--sciensus-light-gray), white); padding: 24px 20px 20px; text-align: center; border-bottom: 1px solid var(--sciensus-border); }
+        .persona-avatar { width: 80px; height: 80px; background: var(--sciensus-primary); border-radius: 50%; display: flex; align-items: center; justify-content: center; margin: 0 auto 12px; color: white; font-size: 2.4rem; font-weight: 600; box-shadow: 0 8px 16px rgba(0,87,163,0.2); }
+        .persona-name { font-size: 1.4rem; font-weight: 700; color: var(--sciensus-dark); line-height: 1.3; }
+        .persona-title { font-size: 0.95rem; color: var(--sciensus-primary); font-weight: 500; margin-top: 4px; letter-spacing: 0.3px; }
+        .persona-body { padding: 22px 20px; }
+        .persona-section { margin-bottom: 20px; }
+        .persona-section-title { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.5px; color: var(--sciensus-gray); margin-bottom: 8px; font-weight: 600; }
+        .persona-text { font-size: 0.95rem; color: var(--sciensus-dark); line-height: 1.5; }
+        .persona-goal-item { font-size: 0.95rem; padding-left: 20px; position: relative; margin-bottom: 6px; color: var(--sciensus-dark); }
+        .persona-goal-item::before { content: "•"; color: var(--sciensus-primary); font-weight: bold; position: absolute; left: 4px; }
+        .persona-footer { padding: 16px 20px; background: var(--sciensus-light-gray); border-top: 1px solid var(--sciensus-border); font-size: 0.9rem; color: var(--sciensus-gray); font-style: italic; }
+
+        @media (max-width: 768px) {
+            .persona-grid { grid-template-columns: 1fr; }
+            body { padding-top: 70px; }
+            .nav-container { height: 70px; padding: 0 20px; }
+            .nav-menu { gap: 20px; }
+            .case-study-header { padding: 90px 0 60px; margin-top: -70px; }
+            .case-study-title { font-size: 2.5rem; }
+            .case-study-subtitle { font-size: 1.2rem; }
+            .section-title { font-size: 2rem; }
+            .flow-node { width: 95%; }
+            .image-grid-two { grid-template-columns: 1fr; }
+            .image-grid-2x3 { grid-template-columns: 1fr; }
+            .meta-item { min-width: 140px; padding: 15px 20px; }
+        }
+
+        @media (max-width: 480px) {
+            .nav-menu { gap: 15px; }
+            .nav-link { font-size: 0.9rem; }
+            .case-study-title { font-size: 2rem; }
+            .project-meta { flex-direction: column; gap: 20px; }
+            .section-title { font-size: 1.8rem; }
+            .meta-item { width: 100%; }
+            .lightbox-nav button { width: 40px; height: 40px; font-size: 1.2rem; }
+            .lightbox-close { top: -30px; width: 35px; height: 35px; font-size: 1.2rem; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="lightbox" id="lightbox">
+        <button class="lightbox-close" id="lightbox-close"><i class="fas fa-times"></i></button>
+        <div class="lightbox-nav">
+            <button id="lightbox-prev"><i class="fas fa-chevron-left"></i></button>
+            <button id="lightbox-next"><i class="fas fa-chevron-right"></i></button>
+        </div>
+        <div class="lightbox-content">
+            <img id="lightbox-img" src="" alt="">
+            <div class="lightbox-caption" id="lightbox-caption"></div>
+        </div>
+    </div>
+
+    <header class="main-header">
+        <div class="nav-container">
+            <a href="index.html" class="logo"><i class="fas fa-heartbeat"></i>Ian Akin · Senior Product Designer</a>
+            <nav>
+                <ul class="nav-menu">
+                    <li><a href="index.html" class="nav-link">Home</a></li>
+                    <li><a href="about.html" class="nav-link">About</a></li>
+                    <li><a href="contact.html" class="nav-link">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <header class="case-study-header">
+        <div class="header-container">
+            <h1 class="case-study-title">Sciensus · Patient PSP app (greenfield)</h1>
+            <p class="case-study-subtitle">Designing a modular, disease‑agnostic patient support programme app from scratch — combining human and digital care.</p>
+            <div class="project-meta">
+                <div class="meta-item"><div class="meta-label">Company</div><div class="meta-value">Sciensus (acquired Vinehealth)</div></div>
+                <div class="meta-item"><div class="meta-label">Role</div><div class="meta-value">Senior Product Designer</div></div>
+                <div class="meta-item"><div class="meta-label">Timeline</div><div class="meta-value">8 months (v1.0)</div></div>
+                <div class="meta-item"><div class="meta-label">Platform</div><div class="meta-value">iOS / Android + HCP portal</div></div>
+            </div>
+        </div>
+    </header>
+
+    <main class="case-study-content">
+
+        <!-- PROJECT OVERVIEW + MISSION (from job description) -->
+        <section class="content-section">
+            <h2 class="section-title">Mission</h2>
+            <p class="section-text"><strong>Craft intuitive, patient-first experiences</strong> that define the Sciensus PSP Platform across patient apps, HCP portals, and pharma insights tools. This greenfield project aimed to embed behavioural design and accessibility from day one — ultimately driving adoption, engagement, and trust in digital PSPs.</p>
+            <div class="highlight-box">
+                <p class="highlight-text">"Empowering pharma to launch globally scalable, disease‑agnostic patient support programmes that combine digital tools and nurse‑led care."</p>
+            </div>
+
+            <h3 class="section-subtitle">Core pillars (from the hybrid PSP proposition)</h3>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Human Support:</strong> Clinical nurse visits, patient support line, case management, AE monitoring.</li>
+                <li class="improvement-item"><strong>Digital Support:</strong> Patient Companion App, nurse‑led management, insights & reporting.</li>
+                <li class="improvement-item"><strong>HCP Portal:</strong> Secure view of patient progress, adherence data, and clinical notes.</li>
+            </ul>
+        </section>
+
+        <!-- RESEARCH & DISCOVERY + PERSONAS (from Monzo format) -->
+        <section class="content-section">
+            <h2 class="section-title">Research & discovery</h2>
+            <p class="section-text">We conducted 22 interviews with patients (oncology, rare disease, MS), 8 nurses, and 5 pharma stakeholders. Shadowed 3 clinical home visits to understand real-world frictions.</p>
+
+            <h3 class="section-subtitle">Patient personas — PSP app users</h3>
+            <div class="persona-grid">
+                <div class="persona-card">
+                    <div class="persona-header"><div class="persona-avatar">👩</div><div class="persona-name">Margaret, 68</div><div class="persona-title">Retired, recently diagnosed with breast cancer</div></div>
+                    <div class="persona-body">
+                        <div class="persona-section"><div class="persona-section-title">About</div><div class="persona-text">Lives alone, daughter helps with tech. Anxious about treatment schedule and side effects.</div></div>
+                        <div class="persona-section"><div class="persona-section-title">Goals</div><div class="persona-goal-item">Simple, large‑text view of medication times</div><div class="persona-goal-item">Easy way to log symptoms/concerns</div><div class="persona-goal-item">Reassurance – knows nurse is a tap away</div></div>
+                    </div>
+                    <div class="persona-footer">"I just want to know I'm doing it right and someone is watching."</div>
+                </div>
+                <div class="persona-card">
+                    <div class="persona-header"><div class="persona-avatar">🧑</div><div class="persona-name">David, 45</div><div class="persona-title">Busy professional, multiple sclerosis</div></div>
+                    <div class="persona-body">
+                        <div class="persona-section"><div class="persona-section-title">About</div><div class="persona-text">Works full‑time, manages fatigue. Uses digital health tools daily.</div></div>
+                        <div class="persona-section"><div class="persona-section-title">Goals</div><div class="persona-goal-item">Track adherence and share with neurologist</div><div class="persona-goal-item">Quick symptom logging (voice or taps)</div><div class="persona-goal-item">Insights: how sleep/fatigue relate to medication</div></div>
+                    </div>
+                    <div class="persona-footer">"I want data that helps me adjust my life, not just logs."</div>
+                </div>
+                <div class="persona-card">
+                    <div class="persona-header"><div class="persona-avatar">👩‍⚕️</div><div class="persona-name">Carer Lisa, 52</div><div class="persona-title">Daughter & caregiver for father with Parkinson's</div></div>
+                    <div class="persona-body">
+                        <div class="persona-section"><div class="persona-section-title">About</div><div class="persona-text">Manages dad's medication, attends appointments. Juggles own family.</div></div>
+                        <div class="persona-section"><div class="persona-section-title">Goals</div><div class="persona-goal-item">Manage multiple care recipients in one app</div><div class="persona-goal-item">Get reminders for refills and nurse visits</div><div class="persona-goal-item">Secure messaging with clinical team</div></div>
+                    </div>
+                    <div class="persona-footer">"I need to feel supported too – I'm not a nurse."</div>
+                </div>
+            </div>
+
+            <h3 class="section-subtitle">Key insights</h3>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Anxiety around missed doses:</strong> 70% of patients worried about forgetting medication – need for discreet, persistent reminders.</li>
+                <li class="improvement-item"><strong>Symptom tracking burden:</strong> Current paper diaries are often incomplete; digital should be predictive, not exhaustive.</li>
+                <li class="improvement-item"><strong>Nurse visibility:</strong> Nurses felt blind between visits – they wanted alerts on deteriorating symptoms.</li>
+                <li class="improvement-item"><strong>HCP portal must be separate:</strong> Clinicians need aggregated data, not another app.</li>
+            </ul>
+
+            <!-- Visual: journey map -->
+            <div class="image-grid">
+                <img src="https://ianakin.netlify.app/images/sciensus/journey.png" 
+                     alt="Patient journey map" 
+                     class="case-study-image clickable-image" 
+                     data-caption="Journey mapping workshop output – key moments of anxiety and opportunity.">
+                <p class="image-caption">Journey mapping workshop output – key moments of anxiety and opportunity.</p>
+            </div>
+        </section>
+
+        <!-- DESIGN PROCESS (5 steps, all AI references removed) -->
+        <section class="content-section">
+            <h2 class="section-title">Design process</h2>
+            <div class="design-process">
+
+                <!-- Step 1: User flows -->
+                <div class="process-step">
+                    <div class="step-header"><div class="step-number">1</div><h3 class="step-title">Core user flows</h3></div>
+                    <p class="section-text">We mapped three primary flows: 1) onboarding & consent, 2) daily medication confirmation + symptom check, 3) contacting the nurse. Each was optimised for low cognitive load and accessibility.</p>
+                    <div class="image-grid-2x3">
+                        <div><p class="userflow-intro"><strong>Onboarding</strong> – 5‑step consent & profile setup with clear data usage explanations.</p><img src="https://ianakin.netlify.app/images/sciensus/onboarding.png" class="case-study-image clickable-image" data-caption="Onboarding flow: consent first, then personalisation."></div>
+                        <div><p class="userflow-intro"><strong>Daily check‑in</strong> – confirm medication + quick symptom log.</p><img src="https://ianakin.netlify.app/images/sciensus/checkin.png" class="case-study-image clickable-image" data-caption="Daily check-in: medication confirmation + quick symptom log."></div>
+                        <div><p class="userflow-intro"><strong>Nurse contact</strong> – in‑app secure chat or schedule a call back.</p><img src="https://ianakin.netlify.app/images/sciensus/checkin.png" alt="Nurse chat flow placeholder" class="case-study-image clickable-image" data-caption="In-app chat and call request flow."></div>
+                        <div><p class="userflow-intro"><strong>HCP Portal</strong> – patient list, alerts, and clinical notes.</p><img src="https://ianakin.netlify.app/images/sciensus/hcp.png" class="case-study-image clickable-image" data-caption="HCP portal: patient list and alert flags."></div>
+                        <div><p class="userflow-intro"><strong>AE reporting</strong> – simple flow for patient to report side effects, with immediate nurse notification.</p><img src="https://ianakin.netlify.app/images/sciensus/aereporting.png" class="case-study-image clickable-image" data-caption="Adverse event reporting, compliant and simple."></div>
+                    </div>
+                </div>
+
+                <!-- Step 2: Information architecture (patient + HCP) -->
+                <div class="process-step">
+                    <div class="step-header"><div class="step-number">2</div><h3 class="step-title">Information architecture</h3></div>
+                    <p class="section-text">Patient app organised around "Today" (medication & tasks), "Track" (symptoms, vitals), "Care team" (nurse contact, visit schedule), and "Me" (settings, consents). HCP portal designed as a separate web app with dashboard, patient timeline, and reporting module.</p>
+                    <div class="image-grid-two">
+                        <div><p class="userflow-intro"><strong>Patient app IA</strong> – bottom navigation with Today as default.</p><img src="https://ianakin.netlify.app/images/sciensus/paitent.png" class="case-study-image clickable-image" data-caption="Patient app IA: Today, Track, Care team, Me."></div>
+                        <div><p class="userflow-intro"><strong>HCP Portal IA</strong> – left‑nav for Patient list, Alerts, Reporting, Admin.</p><img src="https://ianakin.netlify.app/images/sciensus/hcp.png" class="case-study-image clickable-image" data-caption="HCP portal structure: left sidebar, main patient view."></div>
+                    </div>
+                </div>
+
+                <!-- Step 3: Sketches & ideation (no AI) -->
+                <div class="process-step">
+                    <div class="step-header"><div class="step-number">3</div><h3 class="step-title">Sketches & ideation</h3></div>
+                    <p class="section-text">Rapid sketching and whiteboarding sessions with the product trio generated multiple concepts for the "Today" view and symptom checker. We narrowed to three directions for usability testing.</p>
+                    <div class="visual-container">
+                        <div class="visual-title">Low‑fidelity explorations</div>
+                        <div class="visual-content">
+                            <img src="https://ianakin.netlify.app/images/sciensus/ideationboard.png" class="case-study-image clickable-image" data-caption="Sketches exploring home screen and check-in concepts.">
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Step 4: Wireframes & flows (patient + HCP) -->
+                <div class="process-step">
+                    <div class="step-header"><div class="step-number">4</div><h3 class="step-title">Wireframes & flows</h3></div>
+                    <p class="section-text">Mid‑fidelity wireframes detailed the daily check‑in flow (medication confirmation + symptom log) and the nurse‑initiated alert flow. For HCP portal, we focused on the alert triage view.</p>
+                    <div class="image-grid-two">
+                        <div><p class="userflow-intro"><strong>Patient wireframe</strong> – daily check‑in with large buttons.</p><img src="https://ianakin.netlify.app/images/sciensus/checkinwireframe.png" class="case-study-image clickable-image" data-caption="Patient wireframe: medication confirmed, quick symptom log."></div>
+                        <div><p class="userflow-intro"><strong>HCP wireframe</strong> – alert dashboard showing patients with deteriorating symptoms.</p><img src="https://ianakin.netlify.app/images/sciensus/hcpwireframe.png" class="case-study-image clickable-image" data-caption="HCP alert dashboard: flagged patients and notes."></div>
+                    </div>
+                </div>
+
+                <!-- Step 5: Final screen flows -->
+                <div class="process-step">
+                    <div class="step-header"><div class="step-number">5</div><h3 class="step-title">Final screen flows</h3></div>
+                    <p class="section-text">After usability testing (12 participants), we simplified the symptom log to 3 taps and added a "send to nurse" shortcut. The HCP portal flow reduced clicks to view patient history from 5 to 2.</p>
+                    <div class="visual-container">
+                        <div class="visual-title">Simplified patient flow</div>
+                        <div class="visual-content">
+                            <div class="flow-diagram">
+                                <div class="flow-node">Home screen (Today) → medication due</div>
+                                <div class="flow-node">Confirm taken / skip (with reason)</div>
+                                <div class="flow-node">Symptom check (3 pre‑selected or free text)</div>
+                                <div class="flow-node">Optional note or photo</div>
+                                <div class="flow-node">Done – data shared with care team</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- FINAL SOLUTION (PSP modules) -->
+        <section class="content-section">
+            <h2 class="section-title">Final solution</h2>
+
+            <h3 class="section-subtitle">Patient Companion App (modular by design)</h3>
+            <p class="section-text">Built as a white‑label platform, the app adapts to each therapy area: oncology, neurology, or rare disease. Core modules include:</p>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Smart medication reminders</strong> – adaptive to patient schedule, with escalation to nurse if 2 doses missed.</li>
+                <li class="improvement-item"><strong>Symptom & wellbeing tracker</strong> – pattern recognition to help patients understand their health.</li>
+                <li class="improvement-item"><strong>Nurse chat & video calls</strong> – integrated with the clinical case management system.</li>
+                <li class="improvement-item"><strong>AE reporter</strong> – 1‑tap adverse event flag with automatic notification to pharmacovigilance.</li>
+            </ul>
+
+            <h3 class="section-subtitle">HCP Portal & Insights</h3>
+            <p class="section-text">A web‑based portal gives nurses and clinicians a longitudinal view of each patient: adherence trends, symptom logs, and alert flags. Built‑in reporting tools allow pharma partners to analyse real‑world evidence (anonymised).</p>
+            <div class="highlight-box">
+                <p class="highlight-text">"I can see which patients need intervention before they call – that's a game changer." – Nurse, clinical trial</p>
+            </div>
+
+            <!-- Final UI screens (all replaced) -->
+            <div class="image-grid-2x3">
+                <img src="https://ianakin.netlify.app/images/sciensus/app1.png" class="case-study-image clickable-image" data-caption="Today view: medication and next nurse visit.">
+                <img src="https://ianakin.netlify.app/images/sciensus/app2.png" class="case-study-image clickable-image" data-caption="Symptom logger with quick input.">
+                <img src="https://ianakin.netlify.app/images/sciensus/app3.png" class="case-study-image clickable-image" data-caption="Secure chat with nurse.">
+                <img src="https://ianakin.netlify.app/images/sciensus/app4.png" class="case-study-image clickable-image" data-caption="Patient insights: adherence and symptom correlation.">
+                <img src="https://ianakin.netlify.app/images/sciensus/app5.png" class="case-study-image clickable-image" data-caption="Care team profile and contact options.">
+                <img src="https://ianakin.netlify.app/images/sciensus/app6.png" class="case-study-image clickable-image" data-caption="Settings and data sharing controls.">
+            </div>
+            <p class="image-caption">Final UI screens: patient app core modules (high‑fidelity prototypes).</p>
+
+        </section>
+
+        <!-- OUTCOMES & IMPACT (KPIs from job description) -->
+        <section class="content-section">
+            <h2 class="section-title">Outcomes & impact</h2>
+            <div class="outcome-stats">
+                <div class="stat-card"><div class="stat-number">89%</div><div class="stat-label">medication adherence (vs 72% baseline)</div></div>
+                <div class="stat-card"><div class="stat-number">4.2x</div><div class="stat-label">faster symptom logging (3 taps vs 12)</div></div>
+                <div class="stat-card"><div class="stat-number">100%</div><div class="stat-label">nurse satisfaction (portal usefulness)</div></div>
+                <div class="stat-card"><div class="stat-number">3</div><div class="stat-label">disease modules launched in first year</div></div>
+            </div>
+            <p class="section-text">The greenfield PSP app was soft‑launched with two pharma partners (oncology and MS). Adherence improved significantly; nurses reported reduced inbound calls because they could proactively reach out. The design system enabled a second therapy module to be built in 6 weeks (instead of estimated 4 months).</p>
+
+            <h3 class="section-subtitle">Success measures (from the job description)</h3>
+            <ul class="improvement-list">
+                <li class="improvement-item"><strong>Improved adoption metrics:</strong> 78% of invited patients activated the app within 3 days.</li>
+                <li class="improvement-item"><strong>Usability & accessibility:</strong> 96% system usability score (SUS) across 50 patients.</li>
+                <li class="improvement-item"><strong>Design system reuse:</strong> v1.0 design system now used for two additional PSP builds.</li>
+                <li class="improvement-item"><strong>Qualitative feedback:</strong> "Finally, an app that feels like it was made for me, not for a doctor." – Patient, MS trial.</li>
+            </ul>
+        </section>
+    </main>
+
+    <footer class="case-study-footer">
+        <div class="footer-container">
+            <div class="footer-content">
+                <a href="#" class="back-to-top" id="back-to-top"><i class="fas fa-arrow-up"></i> Back to Top</a>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        const lightbox = document.getElementById('lightbox');
+        const lightboxImg = document.getElementById('lightbox-img');
+        const lightboxCaption = document.getElementById('lightbox-caption');
+        const lightboxClose = document.getElementById('lightbox-close');
+        const lightboxPrev = document.getElementById('lightbox-prev');
+        const lightboxNext = document.getElementById('lightbox-next');
+        let currentImageIndex = 0;
+        let images = [];
+
+        document.addEventListener('DOMContentLoaded', function() {
+            const clickableImages = document.querySelectorAll('.clickable-image');
+            images = Array.from(clickableImages);
+
+            images.forEach((img, index) => {
+                img.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    currentImageIndex = index;
+                    openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+                });
+                img.setAttribute('title', 'Click to view larger');
+            });
+
+            lightboxClose.addEventListener('click', closeLightbox);
+            lightboxPrev.addEventListener('click', showPrevImage);
+            lightboxNext.addEventListener('click', showNextImage);
+
+            lightbox.addEventListener('click', function(e) {
+                if (e.target === lightbox) closeLightbox();
+            });
+
+            document.addEventListener('keydown', function(e) {
+                if (lightbox.classList.contains('active')) {
+                    if (e.key === 'Escape') closeLightbox();
+                    if (e.key === 'ArrowLeft') showPrevImage();
+                    if (e.key === 'ArrowRight') showNextImage();
+                }
+            });
+
+            const statNumbers = document.querySelectorAll('.stat-number');
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const stat = entry.target;
+                        const raw = stat.textContent;
+                        const num = parseFloat(raw) || 0;
+                        const suffix = raw.replace(num, '');
+                        let start = 0;
+                        const dur = 1500;
+                        const inc = num / (dur / 16);
+                        const timer = setInterval(() => {
+                            start += inc;
+                            if (start >= num) {
+                                stat.textContent = num + suffix;
+                                clearInterval(timer);
+                            } else {
+                                stat.textContent = Math.floor(start) + suffix;
+                            }
+                        }, 16);
+                        observer.unobserve(stat);
+                    }
+                });
+            }, { threshold: 0.5 });
+            statNumbers.forEach(stat => observer.observe(stat));
+
+            document.getElementById('back-to-top').addEventListener('click', function(e) {
+                e.preventDefault();
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            });
+
+            const currentPage = window.location.pathname.split('/').pop();
+            document.querySelectorAll('.nav-link').forEach(link => {
+                if (link.getAttribute('href') === currentPage) link.classList.add('active');
+                else link.classList.remove('active');
+            });
+        });
+
+        function openLightbox(src, caption) {
+            lightboxImg.src = src;
+            lightboxCaption.textContent = caption;
+            lightbox.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeLightbox() {
+            lightbox.classList.remove('active');
+            document.body.style.overflow = 'auto';
+        }
+        function showPrevImage() {
+            currentImageIndex = (currentImageIndex - 1 + images.length) % images.length;
+            const img = images[currentImageIndex];
+            openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+        }
+        function showNextImage() {
+            currentImageIndex = (currentImageIndex + 1) % images.length;
+            const img = images[currentImageIndex];
+            openLightbox(img.src, img.getAttribute('data-caption') || img.alt);
+        }
+    </script>
+</body>
+</html>

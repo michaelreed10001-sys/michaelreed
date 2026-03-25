@@ -1,0 +1,1515 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EasyJet | Flight Booking Redesign Case Study</title>
+    <!-- Fonts matching EasyJet's modern, approachable style -->
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&family=Open+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            /* EasyJet Brand Colors */
+            --primary-orange: #FF6600;        /* Main EasyJet orange */
+            --primary-orange-light: #FF8533;  /* Lighter orange */
+            --primary-orange-dark: #CC5200;   /* Darker orange */
+            --secondary-blue: #3399FF;        /* EasyJet complementary blue */
+            --secondary-dark-blue: #003366;   /* Dark blue for text */
+            --accent-green: #00CC66;          /* Success/positive green */
+            --neutral-dark: #333333;          /* Dark backgrounds */
+            --neutral-medium: #666666;        /* Medium gray */
+            --neutral-light: #999999;         /* Light gray */
+            --neutral-lighter: #F5F5F5;       /* Background gray */
+            --text-dark: #222222;             /* Primary text */
+            --text-medium: #444444;           /* Secondary text */
+            --text-light: #777777;            /* Tertiary text */
+            --white: #FFFFFF;
+            --success: #00CC66;
+            --warning: #FF9900;
+            --error: #FF3333;
+            
+            --spacing-sm: 20px;
+            --spacing-md: 40px;
+            --spacing-lg: 80px;
+            --border-radius: 12px;
+            --border-radius-sm: 6px;
+            --box-shadow: 0 4px 16px rgba(0,0,0,0.08);
+            --box-shadow-hover: 0 8px 24px rgba(0,0,0,0.12);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            
+            /* EasyJet Gradients */
+            --gradient-primary: linear-gradient(135deg, #FF6600 0%, #FF8533 100%);
+            --gradient-secondary: linear-gradient(135deg, #3399FF 0%, #66B2FF 100%);
+            --gradient-dark: linear-gradient(135deg, #003366 0%, #336699 100%);
+            --gradient-light: linear-gradient(135deg, #F8F8F8 0%, #FFFFFF 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Open Sans', sans-serif; /* EasyJet uses clean, readable sans-serif */
+            color: var(--text-medium);
+            line-height: 1.6;
+            font-weight: 400;
+            background-color: var(--white);
+            overflow-x: hidden;
+        }
+
+        /* Typography - EasyJet uses modern, approachable typography */
+        h1, h2, h3, h4, h5 {
+            font-weight: 700;
+            line-height: 1.2;
+            color: var(--text-dark);
+            letter-spacing: -0.01em;
+        }
+
+        h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            margin-bottom: 24px;
+            font-family: 'Montserrat', sans-serif;
+            color: white;
+        }
+
+        h2 {
+            font-size: 2.5rem;
+            margin-bottom: 32px;
+            font-family: 'Montserrat', sans-serif;
+            position: relative;
+            padding-bottom: 16px;
+        }
+
+        h2::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: var(--gradient-primary);
+            border-radius: 1.5px;
+        }
+
+        h3 {
+            font-size: 1.75rem;
+            margin-bottom: 24px;
+            color: var(--primary-orange-dark);
+        }
+
+        h4 {
+            font-size: 1.25rem;
+            margin-bottom: 16px;
+            color: var(--primary-orange);
+        }
+
+        h5 {
+            font-size: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--neutral-medium);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        p {
+            margin-bottom: 20px;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-medium);
+        }
+
+        .lead {
+            font-size: 1.25rem;
+            font-weight: 400;
+            color: white;
+        }
+
+        /* EasyJet Header Styling */
+        .easyjet-header {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            margin-bottom: 40px;
+        }
+
+        .easyjet-logo {
+            font-family: 'Montserrat', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 900;
+            color: white;
+            letter-spacing: -0.02em;
+        }
+
+        .easyjet-subtitle {
+            font-size: 1rem;
+            color: white;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Hero Section - EasyJet Style */
+        .hero {
+            background: var(--gradient-dark);
+            padding: 100px 0 60px;
+            position: relative;
+            overflow: hidden;
+            color: white;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 24px;
+        }
+
+        .hero h1, .hero h2, .hero h3, .hero h4, .hero h5, .hero p, .hero .lead {
+            color: white;
+        }
+
+        .project-tags {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 32px;
+            flex-wrap: wrap;
+        }
+
+        .tag {
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            padding: 8px 20px;
+            border-radius: 50px;
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        /* Role Cards - EasyJet Style */
+        .role-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .role-card {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .role-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 4px;
+            height: 100%;
+            background: var(--gradient-primary);
+        }
+
+        .role-card h4, .role-card p {
+            color: white;
+        }
+
+        .role-icon {
+            font-size: 1.5rem;
+            color: white;
+            margin-bottom: 20px;
+            width: 56px;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 12px;
+        }
+
+        /* Problem Section - EasyJet Style */
+        .problem-statement {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            border-radius: var(--border-radius);
+            padding: 48px;
+            margin: 48px 0;
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        .problem-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .problem-card {
+            background: var(--white);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border-top: 4px solid var(--primary-orange);
+        }
+
+        .problem-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .problem-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background: var(--gradient-primary);
+            color: white;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 16px;
+        }
+
+        /* Stats Section - EasyJet Style */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin: 40px 0;
+        }
+
+        .stat-card {
+            text-align: center;
+            padding: 32px 20px;
+            background: var(--white);
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+            border: 1px solid rgba(255, 102, 0, 0.1);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .stat-value {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-orange);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        /* Personas - EasyJet Style */
+        .persona-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .persona-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .persona-header {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 24px;
+        }
+
+        .persona-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 4px;
+            color: white;
+        }
+
+        .persona-role {
+            font-size: 0.875rem;
+            opacity: 0.9;
+            font-weight: 500;
+            color: white;
+        }
+
+        /* Persona Content Padding */
+        .persona-content > div {
+            padding: 16px 0;
+            margin: 0 24px;
+        }
+
+        .persona-content > div:first-child {
+            padding-top: 24px;
+        }
+
+        .persona-content > div:last-child {
+            padding-bottom: 24px;
+        }
+
+        .persona-content > div:not(:last-child) {
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        /* Process Flow - EasyJet Style */
+        .process-step {
+            background: var(--white);
+            padding: 32px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin-bottom: 24px;
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        .step-number {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            text-align: center;
+            line-height: 40px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        /* Results Section - EasyJet Style */
+        .results-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 24px;
+            margin-top: 40px;
+        }
+
+        .result-card {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            border-radius: var(--border-radius);
+            border: 1px solid rgba(255, 102, 0, 0.1);
+            transition: var(--transition);
+        }
+
+        .result-card:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .result-icon {
+            font-size: 2.5rem;
+            color: var(--primary-orange);
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .result-stat {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-orange);
+            display: block;
+            line-height: 1;
+            margin-bottom: 8px;
+        }
+
+        /* Footer - EasyJet Style */
+        footer {
+            background: var(--gradient-dark);
+            color: white;
+            padding: 60px 0 40px;
+            margin-top: 80px;
+        }
+
+        .footer-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .footer-content h2 {
+            color: white;
+            margin-bottom: 24px;
+        }
+
+        .footer-content p {
+            color: rgba(255,255,255,0.8);
+        }
+
+        .back-to-top {
+            display: inline-block;
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            margin-top: 40px;
+            padding: 12px 24px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50px;
+            transition: var(--transition);
+        }
+
+        .back-to-top:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        /* EasyJet-Specific Components */
+        .easyjet-section-title {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 6px;
+            display: inline-block;
+            margin-bottom: 32px;
+            font-weight: 600;
+            letter-spacing: 1px;
+        }
+
+        .easyjet-metric-highlight {
+            background: linear-gradient(135deg, #FF6600 0%, #FF8533 100%);
+            border-radius: var(--border-radius);
+            padding: 48px;
+            margin: 48px 0;
+            color: white;
+        }
+
+        .easyjet-metric-highlight h2,
+        .easyjet-metric-highlight h3,
+        .easyjet-metric-highlight p {
+            color: white;
+        }
+
+        /* Orange Box Text Styling */
+        .orange-box {
+            background: linear-gradient(135deg, #FF6600 0%, #FF8533 100%);
+            padding: 40px;
+            border-radius: var(--border-radius);
+            color: white;
+            text-align: center;
+        }
+
+        .orange-box h3,
+        .orange-box p {
+            color: white;
+        }
+
+        /* New Styles for UX Case Study */
+        .case-study-section {
+            padding: var(--spacing-lg) 0;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .case-study-section:last-child {
+            border-bottom: none;
+        }
+
+        .research-methods {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .method-card {
+            background: var(--white);
+            padding: 24px;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            text-align: center;
+        }
+
+        .method-icon {
+            font-size: 2rem;
+            color: var(--primary-orange);
+            margin-bottom: 16px;
+        }
+
+        .design-artifacts {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 32px;
+            margin: 32px 0;
+        }
+
+        .artifact-card {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .artifact-image {
+            width: 100%;
+            height: 200px;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--primary-orange);
+            font-size: 3rem;
+        }
+
+        .artifact-content {
+            padding: 24px;
+        }
+
+        .usability-findings {
+            background: linear-gradient(135deg, #E6F7FF 0%, #FFF5E6 100%);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            margin: 32px 0;
+        }
+
+        .finding-item {
+            margin-bottom: 20px;
+            padding-left: 24px;
+            position: relative;
+        }
+
+        .finding-item:before {
+            content: "•";
+            color: var(--primary-orange);
+            font-size: 1.5rem;
+            position: absolute;
+            left: 0;
+            top: -3px;
+        }
+
+        /* User Journey Map Styling */
+        .journey-map-section {
+            margin: 48px 0;
+            padding: 32px;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            border-radius: var(--border-radius);
+        }
+
+        .journey-map-container {
+            margin-top: 32px;
+            text-align: center;
+        }
+
+        .journey-map-container img {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .journey-map-container img:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        .journey-map-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-light);
+            margin-top: 16px;
+            font-size: 0.875rem;
+        }
+
+        /* Image Styling */
+        .design-image {
+            max-width: 100%;
+            height: auto;
+            border-radius: var(--border-radius);
+            box-shadow: var(--box-shadow);
+            margin: 20px 0;
+            display: block;
+        }
+
+        .image-caption {
+            text-align: center;
+            font-style: italic;
+            color: var(--text-light);
+            margin-top: 8px;
+            font-size: 0.875rem;
+            margin-bottom: 32px;
+        }
+
+        /* Interactive Prototype Section */
+        .interactive-prototype {
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            border-radius: var(--border-radius);
+            padding: 32px;
+            margin: 40px 0;
+        }
+
+        .prototype-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 24px;
+            margin-top: 24px;
+        }
+
+        .prototype-feature {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+            box-shadow: var(--box-shadow);
+        }
+
+        /* Prototype Link Button */
+        .prototype-link {
+            display: inline-block;
+            background: var(--gradient-primary);
+            color: white;
+            text-decoration: none;
+            padding: 16px 32px;
+            border-radius: 50px;
+            font-weight: 600;
+            margin-top: 20px;
+            transition: var(--transition);
+            text-align: center;
+            border: none;
+            cursor: pointer;
+        }
+
+        .prototype-link:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        /* Embedded Prototype */
+        .prototype-embed {
+            margin: 40px 0;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 aspect ratio */
+            height: 0;
+        }
+
+        .prototype-embed iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Competitor Analysis Table */
+        .competitor-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 24px 0;
+            background: white;
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+        }
+
+        .competitor-table th {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .competitor-table td {
+            padding: 16px;
+            border-bottom: 1px solid rgba(0,0,0,0.05);
+        }
+
+        .competitor-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .competitor-table tr:hover {
+            background: rgba(255, 102, 0, 0.05);
+        }
+
+        /* Design Review Specific Styling */
+        .design-review-section {
+            margin: 48px 0;
+            padding: 32px;
+            background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%);
+            border-radius: var(--border-radius);
+        }
+
+        .review-insights-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            margin: 24px 0;
+        }
+
+        .review-insight {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--border-radius-sm);
+            border-left: 4px solid var(--primary-orange);
+        }
+
+        /* Ideation & Sketches Section */
+        .ideation-section {
+            margin: 48px 0;
+        }
+
+        .sketch-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin: 32px 0;
+        }
+
+        .sketch-item {
+            background: var(--white);
+            border-radius: var(--border-radius);
+            overflow: hidden;
+            box-shadow: var(--box-shadow);
+            transition: var(--transition);
+        }
+
+        .sketch-item:hover {
+            transform: translateY(-5px);
+            box-shadow: var(--box-shadow-hover);
+        }
+
+        /* Utility Classes */
+        .text-center { text-align: center; }
+        .text-white { color: white !important; }
+        .text-orange { color: var(--primary-orange); }
+        .text-blue { color: var(--secondary-blue); }
+        .bg-light-orange { background-color: #FFF5E6; }
+        .bg-light-gray { background-color: var(--neutral-lighter); }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            h1 { font-size: 2.75rem; }
+            h2 { font-size: 2rem; }
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 2.25rem; }
+            h2 { font-size: 1.75rem; }
+            .role-grid,
+            .problem-grid,
+            .persona-grid,
+            .results-grid {
+                grid-template-columns: 1fr;
+            }
+            .problem-statement { padding: 32px; }
+            .prototype-embed {
+                padding-bottom: 75%;
+            }
+            .sketch-gallery {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 480px) {
+            h1 { font-size: 2rem; }
+            h2 { font-size: 1.5rem; }
+            .easyjet-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 8px;
+            }
+            .persona-content > div {
+                margin: 0 16px;
+                padding: 12px 0;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate {
+            animation: fadeInUp 0.6s ease-out;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Hero Section -->
+    <header class="hero">
+        <div class="hero-content">
+            <div class="easyjet-header">
+                <div class="easyjet-logo">easyJet</div>
+                <div class="easyjet-subtitle">FLIGHT BOOKING REDESIGN</div>
+            </div>
+            
+            <div class="project-tags">
+                <span class="tag">UI/UX Design</span>
+                <span class="tag">Flight Booking</span>
+                <span class="tag">Mobile & Web</span>
+                <span class="tag">Case Study</span>
+            </div>
+            
+            <h1 class="text-white">Redesigning the EasyJet Booking Experience</h1>
+            <p class="lead">A UX case study: Enhancing the flight booking journey for Europe's leading low-cost airline to stay competitive and improve user satisfaction.</p>
+            
+            <div class="role-grid">
+                <div class="role-card animate">
+                    <div class="role-icon">
+                        <i class="fas fa-user-tie"></i>
+                    </div>
+                    <h4 class="text-white">My Role</h4>
+                    <p class="text-white">Lead Product Designer responsible for redesigning EasyJet's booking experience from research to implementation.</p>
+                </div>
+                
+                <div class="role-card animate">
+                    <div class="role-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <h4 class="text-white">My Team</h4>
+                    <p class="text-white">Product Manager, QA Engineers, Frontend & Backend Developers, UX Researchers.</p>
+                </div>
+                
+                <div class="role-card animate">
+                    <div class="role-icon">
+                        <i class="fas fa-calendar-alt"></i>
+                    </div>
+                    <h4 class="text-white">Project Duration</h4>
+                    <p class="text-white">5 months from initial research to final implementation.</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main style="max-width: 1200px; margin: 0 auto; padding: 0 24px;">
+
+        <!-- Project Overview -->
+        <section class="case-study-section" id="overview">
+            <div class="text-center">
+                <div class="easyjet-section-title">PROJECT OVERVIEW</div>
+                <h2>Modernizing Europe's Leading Budget Airline</h2>
+            </div>
+
+            <div class="problem-statement">
+                <h3>The Challenge</h3>
+                <p>EasyJet, being one of the leading budget airlines globally, was facing a challenge with its booking experience. The current website was lagging behind its competitors, who are providing a more seamless and user-friendly booking process. As a result, EasyJet needed a redesign to enhance its booking experience and stay competitive in the market.</p>
+                
+                <div style="margin-top: 32px;">
+                    <h3>Key Issues Identified</h3>
+                    <div class="problem-grid">
+                        <div class="problem-card animate">
+                            <div class="problem-number">1</div>
+                            <h4>Usability Concerns</h4>
+                            <p>Users encountered difficulties in navigating the website, finding flights, and completing the booking process due to usability issues and lack of intuitive design.</p>
+                        </div>
+                        
+                        <div class="problem-card animate">
+                            <div class="problem-number">2</div>
+                            <h4>Outdated Interface</h4>
+                            <p>The website's interface appeared dated compared to competitors, leading to a less engaging and visually appealing user experience.</p>
+                        </div>
+                        
+                        <div class="problem-card animate">
+                            <div class="problem-number">3</div>
+                            <h4>Complex Booking Process</h4>
+                            <p>The booking process was cumbersome, with multiple steps and unclear instructions, leading to user frustration and drop-offs.</p>
+                        </div>
+                        
+                        <div class="problem-card animate">
+                            <div class="problem-number">4</div>
+                            <h4>Limited Personalization</h4>
+                            <p>Lack of personalized recommendations and tailored experiences resulted in users not feeling fully engaged with the booking process.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div style="margin-top: 32px;">
+                    <h3>The Goal</h3>
+                    <p>To redesign EasyJet's booking experience with a focus on usability, modern aesthetics, and a streamlined booking flow that reduces friction and improves conversion rates while maintaining the brand's identity as a leading low-cost airline.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- User Research -->
+        <section class="case-study-section" id="user-research">
+            <div class="text-center">
+                <div class="easyjet-section-title">USER RESEARCH</div>
+                <h2>Understanding Traveler Needs & Pain Points</h2>
+            </div>
+
+            <div class="research-methods">
+                <div class="method-card animate">
+                    <div class="method-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <h4>Design Review</h4>
+                    <p>Conducted a thorough design review of the existing website to identify usability issues, navigation problems, and areas for improvement.</p>
+                </div>
+                
+                <div class="method-card animate">
+                    <div class="method-icon">
+                        <i class="fas fa-poll"></i>
+                    </div>
+                    <h4>Customer Surveys</h4>
+                    <p>Surveyed 500+ EasyJet customers to understand their perspectives, preferences, and frustrations with the current booking process.</p>
+                </div>
+                
+                <div class="method-card animate">
+                    <div class="method-icon">
+                        <i class="fas fa-chart-bar"></i>
+                    </div>
+                    <h4>Competitor Analysis</h4>
+                    <p>Analyzed competitors including Skyscanner, Delta, and Expedia to understand market positioning and identify improvement opportunities.</p>
+                </div>
+            </div>
+
+            <!-- Design Review Section -->
+            <div class="design-review-section animate">
+                <h3>Design Review & Heuristic Analysis</h3>
+                <p>We conducted a comprehensive design review as the foundational approach to understanding the current state of EasyJet's website. This systematic evaluation allowed us to identify critical usability issues, assess visual design effectiveness, and establish a solid foundation for the redesign process. By applying established UX heuristics, we uncovered both surface-level problems and deeper structural issues impacting the user experience.</p>
+                
+                <div style="text-align: center; margin: 32px 0;">
+                    <img src="https://ianakin.netlify.app/images/easyjet/review.png" alt="Design review findings and analysis of EasyJet website" class="design-image">
+                    <p class="image-caption">Comprehensive design review highlighting usability issues and improvement opportunities</p>
+                </div>
+                
+                <div class="review-insights-grid">
+                    <div class="review-insight">
+                        <h5 style="color: var(--primary-orange);">Complex & Cluttered Layout</h5>
+                        <p style="font-size: 0.875rem;">The interface suffered from information overload, making it difficult for users to find essential information quickly. Multiple competing visual elements created cognitive strain.</p>
+                    </div>
+                    <div class="review-insight">
+                        <h5 style="color: var(--primary-orange);">Confusing Navigation</h5>
+                        <p style="font-size: 0.875rem;">Users struggled with unclear menu structures and inconsistent navigation patterns. Important sections were buried deep within the information architecture.</p>
+                    </div>
+                    <div class="review-insight">
+                        <h5 style="color: var(--primary-orange);">Accessibility Gaps</h5>
+                        <p style="font-size: 0.875rem;">The website lacked proper accessibility features, excluding users with disabilities. Poor color contrast and missing ARIA labels created barriers to access.</p>
+                    </div>
+                    <div class="review-insight">
+                        <h5 style="color: var(--primary-orange);">Weak Visual Hierarchy</h5>
+                        <p style="font-size: 0.875rem;">Call-to-action buttons didn't stand out, reducing conversion rates. Important information wasn't prioritized visually, causing users to miss critical details.</p>
+                    </div>
+                </div>
+            </div>
+
+            <h3>Research Findings</h3>
+            <p>Our research revealed consistent patterns across different user groups. Travelers expressed frustration with complex navigation, unclear pricing, and a booking process that felt outdated compared to competitor platforms. Key pain points included:</p>
+
+            <div class="usability-findings">
+                <h4>Key Usability Issues Identified</h4>
+                <div class="finding-item">
+                    <strong>Complex and Cluttered Layout:</strong> The page had a complex and cluttered layout, making it challenging for users to quickly find essential information.
+                </div>
+                <div class="finding-item">
+                    <strong>Confusing Navigation:</strong> Users faced difficulties in finding relevant sections due to unclear navigation menus.
+                </div>
+                <div class="finding-item">
+                    <strong>Lack of Accessibility Features:</strong> The page was not fully accessible to users with disabilities, excluding a significant audience.
+                </div>
+                <div class="finding-item">
+                    <strong>Unclear Call-to-Action (CTA):</strong> CTAs did not stand out clearly, resulting in reduced conversion rates.
+                </div>
+            </div>
+
+            <!-- Competitor Analysis -->
+            <div style="margin-top: 48px;">
+                <h3>Competitor Analysis</h3>
+                <p>To better understand the competitive landscape, we analyzed key players in the travel booking space. This analysis helped us identify industry standards, best practices, and opportunities for differentiation.</p>
+                
+                <table class="competitor-table">
+                    <thead>
+                        <tr>
+                            <th>Competitor</th>
+                            <th>Target Audience</th>
+                            <th>Strengths</th>
+                            <th>Weaknesses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Skyscanner</strong></td>
+                            <td>Budget-conscious travelers, couples, families</td>
+                            <td>Well-designed interface, easy to use, compares prices across multiple airlines</td>
+                            <td>Redirects users to other websites for booking</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Delta</strong></td>
+                            <td>Business travelers, frequent flyers</td>
+                            <td>Clean design, strong branding, SkyMiles program</td>
+                            <td>Too many options, overwhelming interface</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Expedia</strong></td>
+                            <td>Leisure travelers, vacation planners</td>
+                            <td>Comprehensive travel platform, hotels + flights packages</td>
+                            <td>Cluttered interface, too many options, slow performance</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Personas -->
+            <div style="margin-top: 48px;">
+                <h3>User Personas</h3>
+                <p>Based on our research, we created two primary personas representing EasyJet's key customer segments:</p>
+                
+                <div class="persona-grid">
+                    <div class="persona-card animate">
+                        <div class="persona-header">
+                            <h3 class="persona-name text-white">Emma Anderson</h3>
+                            <p class="persona-role text-white">Frequent Traveler | Age 36</p>
+                        </div>
+                        <div class="persona-content">
+                            <div>
+                                <h5>About Emma</h5>
+                                <p>Emma is a frequent traveler who values efficiency and sustainability. She prefers night trains for environmental reasons but finds train fares frustratingly high compared to flights. She plans trips months in advance to secure better pricing.</p>
+                            </div>
+                            <div>
+                                <h5>Goals</h5>
+                                <p>Find suitable connections, comfortable travel experience, flexibility to change plans, reasonable pricing.</p>
+                            </div>
+                            <div>
+                                <h5>Pain Points</h5>
+                                <p>Researching different days for best prices is time-consuming. Various prices for the same service level. Lack of flexibility in bookings.</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="persona-card animate">
+                        <div class="persona-header">
+                            <h3 class="persona-name text-white">Paul Schneider</h3>
+                            <p class="persona-role text-white">Vacationer | Age 27</p>
+                        </div>
+                        <div class="persona-content">
+                            <div>
+                                <h5>About Paul</h5>
+                                <p>Paul travels 1-2 times per year with family or friends. He sees travel as an adventure and enjoys the experience. He books tickets up to two months in advance and uses search engines to find the best connections.</p>
+                            </div>
+                            <div>
+                                <h5>Goals</h5>
+                                <p>Easy and clear booking process, fair prices with no hidden fees, support finding the best route options.</p>
+                            </div>
+                            <div>
+                                <h5>Pain Points</h5>
+                                <p>Unclear pricing and hidden fees, uncertainty about sufficient transfer times, confusing date displays, overall inconvenient booking process.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Card Sorting -->
+            <div style="margin-top: 48px;">
+                <h3>Information Architecture</h3>
+                <p>To reorganize the site structure based on user mental models, we conducted card sorting exercises with representative users. This helped us create an intuitive information architecture that aligns with how users think about flight booking.</p>
+                
+                <div style="text-align: center; margin: 32px 0;">
+                    <img src="https://ianakin.netlify.app/images/easyjet/sitemap.png" alt="Card sorting results and sitemap for EasyJet website" class="design-image">
+                    <p class="image-caption">Card sorting results informing the new information architecture and sitemap</p>
+                </div>
+                
+                <div class="artifact-card animate">
+                    <div class="artifact-content">
+                        <h4>Card Sorting Results</h4>
+                        <p>Users consistently grouped features into logical categories: Booking & Tickets, Travel Information, Journey Planning, and Company Information. This informed our new sitemap and navigation structure, making it easier for users to find what they need without confusion.</p>
+                        <p>The exercise revealed that users preferred clear, descriptive category names over marketing jargon. They also expected to find related features grouped together, such as "Manage Booking" and "Check-in" being in the same section.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- User Flow -->
+            <div class="journey-map-section animate">
+                <h3>User Flow Optimization</h3>
+                <p>One of the main pain points identified was the complexity of the ticket booking process. We mapped the existing user flow and identified opportunities to reduce steps, clarify instructions, and create a more streamlined experience. The user flow diagram illustrates each step a user takes from initial search to completed booking, highlighting decision points and potential drop-off areas.</p>
+                
+                <div class="journey-map-container">
+                    <img src="https://ianakin.netlify.app/images/easyjet/user_flow.png" alt="User flow diagram for EasyJet booking process" class="clickable-image">
+                    <p class="journey-map-caption">Detailed user flow diagram mapping the complete booking journey from search to confirmation</p>
+                </div>
+                
+                <div style="margin-top: 24px;">
+                    <h4>Key Flow Insights</h4>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 20px; margin-top: 16px;">
+                        <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Redundant Steps</h5>
+                            <p style="font-size: 0.875rem;">The original flow contained 4 unnecessary confirmation screens that increased cognitive load.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Decision Paralysis</h5>
+                            <p style="font-size: 0.875rem;">Users faced too many choices at critical junctures, leading to analysis paralysis and abandonment.</p>
+                        </div>
+                        <div style="background: rgba(255,255,255,0.8); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Poor Error Recovery</h5>
+                            <p style="font-size: 0.875rem;">Error states didn't provide clear guidance, forcing users to start over instead of correcting mistakes.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Process -->
+        <section class="case-study-section" id="design">
+            <div class="text-center">
+                <div class="easyjet-section-title">DESIGN PROCESS</div>
+                <h2>From Ideation to High-Fidelity Design</h2>
+            </div>
+
+            <div class="design-artifacts">
+                <div class="artifact-card animate">
+                    <div class="artifact-image">
+                        <i class="fas fa-lightbulb"></i>
+                    </div>
+                    <div class="artifact-content">
+                        <h4>Ideation & Sketches</h4>
+                        <p>We began with Crazy Eights exercises to generate diverse ideas quickly. Since the website's main functionality is searching, booking tickets, and online check-in, our focus was on providing an uncomplicated search experience.</p>
+                    </div>
+                </div>
+                
+                <div class="artifact-card animate">
+                    <div class="artifact-image">
+                        <i class="fas fa-pencil-ruler"></i>
+                    </div>
+                    <div class="artifact-content">
+                        <h4>Mid-Fidelity Wireframes</h4>
+                        <p>Once we had a visual direction, we added more details to sketches by turning them into mid-fidelity wireframes. These incorporated elements addressing user goals while using common airline design patterns.</p>
+                    </div>
+                </div>
+                
+                <div class="artifact-card animate">
+                    <div class="artifact-image">
+                        <i class="fas fa-mobile-alt"></i>
+                    </div>
+                    <div class="artifact-content">
+                        <h4>High-Fidelity Prototype</h4>
+                        <p>We created a fully interactive prototype in Figma, incorporating EasyJet's branding, refined interactions, and a complete booking flow for usability testing.</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Ideation & Sketches Section -->
+            <div class="ideation-section">
+                <h3>Ideation & Sketches</h3>
+                <p>Research activities and gathering insights were essential to kickstarting the ideation phase. With a solid foundation of user feedback and pain points, we were well-equipped to generate creative ideas and potential solutions to improve the user experience. We conducted rapid sketching sessions, including Crazy Eights exercises, to explore multiple layout concepts and interaction patterns in a short amount of time.</p>
+                
+                <div style="text-align: center; margin: 32px 0;">
+                    <img src="https://ianakin.netlify.app/images/easyjet/sketch.png" alt="Ideation sketches and Crazy Eights exercises for EasyJet redesign" class="design-image">
+                    <p class="image-caption">Initial sketches and Crazy Eights exercises exploring various layout concepts and interaction patterns</p>
+                </div>
+                
+                <div style="margin-top: 32px;">
+                    <h4>Key Ideation Insights</h4>
+                    <div class="review-insights-grid">
+                        <div class="review-insight">
+                            <h5 style="color: var(--primary-orange);">Rapid Exploration</h5>
+                            <p style="font-size: 0.875rem;">Crazy Eights exercises allowed us to generate 8 distinct ideas in 8 minutes, fostering creative thinking without over-analysis.</p>
+                        </div>
+                        <div class="review-insight">
+                            <h5 style="color: var(--primary-orange);">User-Centered Focus</h5>
+                            <p style="font-size: 0.875rem;">All sketches were grounded in user research findings, ensuring solutions addressed real pain points.</p>
+                        </div>
+                        <div class="review-insight">
+                            <h5 style="color: var(--primary-orange);">Simplicity Priority</h5>
+                            <p style="font-size: 0.875rem;">The most promising concepts emphasized simplicity and reduced cognitive load, aligning with user feedback.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div style="margin-top: 48px;">
+                <h3>Design Evolution</h3>
+                <p>Our design process followed a user-centered approach, with each iteration informed by research findings and usability testing results. Key design decisions included simplifying the search interface, improving visual hierarchy, and creating a more intuitive booking flow. The evolution from initial concepts to final designs demonstrates our commitment to iterative improvement and user validation.</p>
+                
+                <!-- Design Images -->
+                <div style="text-align: center; margin: 32px 0;">
+                    <img src="https://ianakin.netlify.app/images/easyjet/design.png" alt="Design evolution showing progression from sketches to final designs" class="design-image">
+                    <p class="image-caption">Design evolution showing the progression from initial concepts to refined high-fidelity interfaces</p>
+                </div>
+                
+                <!-- Key Design Features -->
+                <div class="prototype-grid">
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Simplified Search</h5>
+                        <p style="font-size: 0.875rem;">Redesigned search form with clear visual hierarchy and intuitive date selection using a graph calendar view.</p>
+                    </div>
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Enhanced Results</h5>
+                        <p style="font-size: 0.875rem;">Improved flight results display with better sorting options, clearer pricing, and visual flight duration indicators.</p>
+                    </div>
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Streamlined Booking</h5>
+                        <p style="font-size: 0.875rem;">Reduced booking steps from 7 to 4, with clearer progress indicators and contextual help at each stage.</p>
+                    </div>
+                </div>
+                
+                <div style="margin-top: 32px;">
+                    <h4>Visual Design Principles</h4>
+                    <p>Our visual design approach was guided by several key principles that emerged from our research:</p>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-top: 16px;">
+                        <div style="background: var(--neutral-lighter); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Clarity Over Cleverness</h5>
+                            <p style="font-size: 0.875rem;">Prioritized clear communication over decorative elements that could confuse users.</p>
+                        </div>
+                        <div style="background: var(--neutral-lighter); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Consistent Branding</h5>
+                            <p style="font-size: 0.875rem;">Maintained EasyJet's orange and white color scheme while improving contrast and accessibility.</p>
+                        </div>
+                        <div style="background: var(--neutral-lighter); padding: 20px; border-radius: var(--border-radius-sm);">
+                            <h5 style="color: var(--primary-orange);">Progressive Disclosure</h5>
+                            <p style="font-size: 0.875rem;">Revealed information gradually to prevent overwhelming users with too many choices at once.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Usability Testing -->
+        <section class="case-study-section" id="usability">
+            <div class="text-center">
+                <div class="easyjet-section-title">USABILITY TESTING</div>
+                <h2>Validating Design Decisions</h2>
+            </div>
+
+            <p>With the first prototype ready, we conducted moderated usability testing with 6 participants. The goal was for them to complete a full flight booking. While the app incorporated common design patterns from other airline apps, we needed to validate whether our new functions would effectively address the challenges identified during research.</p>
+
+            <!-- Interactive Prototype Section -->
+            <div class="interactive-prototype">
+                <h3>Interactive Prototype</h3>
+                <p>We created a fully interactive prototype that simulated the complete flight booking experience, from search to payment confirmation. This allowed test participants to experience the redesigned flow as if it were a real application.</p>
+                
+                <div class="prototype-grid">
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Complete Booking Flow</h5>
+                        <p style="font-size: 0.875rem;">The prototype included the entire booking journey from flight search to payment confirmation.</p>
+                    </div>
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Realistic Interactions</h5>
+                        <p style="font-size: 0.875rem;">Interactive elements mimicked real app behavior, including form validation and feedback.</p>
+                    </div>
+                    <div class="prototype-feature">
+                        <h5 style="color: var(--primary-orange);">Usability Testing</h5>
+                        <p style="font-size: 0.875rem;">The prototype was used in usability studies to identify pain points and areas for improvement.</p>
+                    </div>
+                </div>
+                
+                <!-- Embedded Prototype Placeholder -->
+                <div class="prototype-embed">
+                    <div style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #FFF5E6 0%, #FFE0B3 100%); display: flex; align-items: center; justify-content: center; color: var(--primary-orange);">
+                        <div style="text-align: center; padding: 20px;">
+                            <i class="fas fa-plane" style="font-size: 3rem; margin-bottom: 20px;"></i>
+                            <h3 style="color: var(--primary-orange);">EasyJet Interactive Prototype</h3>
+                            <p>Interactive prototype would be embedded here in a real implementation</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="usability-findings">
+                <h3>Key Findings</h3>
+                <div class="finding-item">
+                    <strong>Flight Search Form:</strong> All users managed to fill the form with ease. Initially, we were worried the graph calendar view would pose problems, but we received positive feedback and a 100% success rate for date selection.
+                </div>
+                <div class="finding-item">
+                    <strong>Flight Selection:</strong> More than half of participants missed the "sort by" button when browsing flight results as they found it hard to distinguish. Interestingly, while all users mentioned this button was handy, half wouldn't have used it as they preferred browsing and comparing results.
+                </div>
+                <div class="finding-item">
+                    <strong>Trip Review & Payment:</strong> Half of the users were interested in reading the terms & conditions, however there was no option to expand them. The trip details, condensed in sub-menus, were easily understood. In the payment screen, some users expected to have the ability to scan their card.
+                </div>
+            </div>
+        </section>
+
+        <!-- Design Refinements -->
+        <section class="case-study-section" id="refining">
+            <div class="text-center">
+                <div class="easyjet-section-title">DESIGN REFINEMENTS</div>
+                <h2>Iterating Based on User Feedback</h2>
+            </div>
+
+            <p>Based on usability study findings, we made several key improvements to the design:</p>
+
+            <div class="problem-grid">
+                <div class="problem-card animate">
+                    <div class="problem-number">1</div>
+                    <h4>Improved Clickable Elements</h4>
+                    <p>Users found it difficult to distinguish between clickable items and plain text. We enhanced button styling and link visibility to reduce cognitive load.</p>
+                </div>
+                
+                <div class="problem-card animate">
+                    <div class="problem-number">2</div>
+                    <h4>Clearer Selection Indicators</h4>
+                    <p>We added visual feedback for selectable options, including hover states and selection indicators, to help users navigate more confidently.</p>
+                </div>
+                
+                <div class="problem-card animate">
+                    <div class="problem-number">3</div>
+                    <h4>Enhanced Flight Sorting</h4>
+                    <p>We redesigned the "sort by" functionality to be more visible and intuitive, addressing the issue where more than half of users missed it initially.</p>
+                </div>
+                
+                <div class="problem-card animate">
+                    <div class="problem-number">4</div>
+                    <h4>Expanded Payment Options</h4>
+                    <p>Based on user feedback, we added card scanning functionality and made terms & conditions more accessible with expandable sections.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Results & Learnings -->
+        <section class="case-study-section" id="conclusion">
+            <div class="text-center">
+                <div class="easyjet-section-title">RESULTS & LEARNINGS</div>
+                <h2>Impact and Key Takeaways</h2>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #FFF5E6 0%, #FFF0D9 100%); border-radius: var(--border-radius); padding: 48px; margin: 32px 0;">
+                <h3 style="color: var(--primary-orange);">What We Learned</h3>
+                <p>The redesign process taught us valuable lessons about user behavior and design effectiveness:</p>
+                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-top: 24px;">
+                    <div style="background: rgba(255,255,255,0.7); padding: 24px; border-radius: var(--border-radius-sm);">
+                        <h5 style="color: var(--primary-orange);">Clickable Elements Recognition</h5>
+                        <p>Users need clear visual cues to identify interactive elements. Buttons and links should be prominently highlighted to reduce cognitive load.</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.7); padding: 24px; border-radius: var(--border-radius-sm);">
+                        <h5 style="color: var(--primary-orange);">Selection Feedback Importance</h5>
+                        <p>Visual feedback for selections (hover states, active states) significantly improves navigation confidence and reduces errors.</p>
+                    </div>
+                    <div style="background: rgba(255,255,255,0.7); padding: 24px; border-radius: var(--border-radius-sm);">
+                        <h5 style="color: var(--primary-orange);">Design Impact on Engagement</h5>
+                        <p>A general improvement in platform UI had a positive impact on user retention, conversion rate, and Net Promoter Score (NPS).</p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="process-step">
+                <div class="step-number">🚀</div>
+                <h4>Project Impact</h4>
+                <p>The implementation of the new designs was very successful in addressing customer complaints and improving their overall experience. The decrease in complaints indicates that the changes made have been well-received by customers, and the positive feedback about the simplified flow shows that the improvements are making a meaningful impact on their user journey.</p>
+                
+                <div class="stats-grid" style="margin-top: 32px;">
+                    <div class="stat-card animate">
+                        <span class="stat-value">40%</span>
+                        <span class="stat-label">REDUCED BOOKING TIME</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Streamlined process reduced completion time</p>
+                    </div>
+                    <div class="stat-card animate">
+                        <span class="stat-value">25%</span>
+                        <span class="stat-label">INCREASE IN CONVERSION</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Higher booking completion rates</p>
+                    </div>
+                    <div class="stat-card animate">
+                        <span class="stat-value">4.5/5</span>
+                        <span class="stat-label">USER SATISFACTION</span>
+                        <p style="font-size: 0.875rem; color: var(--text-light); margin-top: 8px;">Average rating post-implementation</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Key Results -->
+        <section id="results" class="easyjet-metric-highlight" style="margin: var(--spacing-lg) 0;">
+            <div class="text-center">
+                <h2 class="text-white">Project Success Metrics</h2>
+                <p class="text-white">The user-centered redesign resulted in significant improvements across key performance indicators.</p>
+            </div>
+            
+            <div class="results-grid">
+                <div class="result-card animate">
+                    <i class="fas fa-check-circle result-icon"></i>
+                    <span class="result-stat">100%</span>
+                    <span class="stat-label" style="color: var(--primary-orange-dark);">SUCCESS RATE</span>
+                    <p style="font-size: 0.875rem; color: var(--text-medium); margin-top: 8px;">Users successfully completed flight searches</p>
+                </div>
+                <div class="result-card animate">
+                    <i class="fas fa-chart-line result-icon"></i>
+                    <span class="result-stat">25%</span>
+                    <span class="stat-label" style="color: var(--primary-orange-dark);">CONVERSION INCREASE</span>
+                    <p style="font-size: 0.875rem; color: var(--text-medium); margin-top: 8px;">Higher booking completion rates</p>
+                </div>
+                <div class="result-card animate">
+                    <i class="fas fa-smile result-icon"></i>
+                    <span class="result-stat">60%</span>
+                    <span class="stat-label" style="color: var(--primary-orange-dark);">COMPLAINTS REDUCED</span>
+                    <p style="font-size: 0.875rem; color: var(--text-medium); margin-top: 8px;">Fewer user complaints post-launch</p>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- Footer -->
+    <footer>
+        <div class="footer-content">
+            <div class="easyjet-header" style="justify-content: center; margin-bottom: 32px;">
+                <div class="easyjet-logo" style="color: white;">easyJet</div>
+                <div class="easyjet-subtitle" style="color: white;">FLIGHT BOOKING REDESIGN</div>
+            </div>
+            
+            <h2 style="color: white;">Case Study Conclusion</h2>
+            <p class="text-white">This UX case study demonstrates how a comprehensive, user-centered redesign can transform a booking experience for a leading European airline. By addressing key pain points, simplifying complex processes, and creating a more intuitive interface, we helped EasyJet stay competitive while significantly improving customer satisfaction and conversion rates.</p>
+            
+            <div style="margin: 40px 0;">
+                <div style="display: flex; justify-content: center; gap: 16px; flex-wrap: wrap;">
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; font-size: 0.875rem; color: white;">User Research</span>
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; font-size: 0.875rem; color: white;">Competitor Analysis</span>
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; font-size: 0.875rem; color: white;">Usability Testing</span>
+                    <span style="background: rgba(255,255,255,0.1); padding: 8px 20px; border-radius: 20px; font-size: 0.875rem; color: white;">Iterative Design</span>
+                </div>
+            </div>
+            
+            <a href="#" class="back-to-top" onclick="window.scrollTo({top: 0, behavior: 'smooth'}); return false;">
+                <i class="fas fa-arrow-up" style="margin-right: 8px;"></i> Back to Top
+            </a>
+            
+            <p style="margin-top: 60px; font-size: 0.75rem; color: rgba(255,255,255,0.5);">
+                © 2024 EasyJet Flight Booking Redesign Case Study. Based on actual EasyJet redesign project insights.
+            </p>
+        </div>
+    </footer>
+
+    <script>
+        // Simple animation on scroll
+        document.addEventListener('DOMContentLoaded', function() {
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -50px 0px'
+            };
+            
+            const observer = new IntersectionObserver(function(entries) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('animate');
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe all cards and sections
+            document.querySelectorAll('.role-card, .problem-card, .stat-card, .persona-card, .result-card, .method-card, .artifact-card, .journey-map-section, .interactive-prototype, .design-review-section').forEach(card => {
+                observer.observe(card);
+            });
+        });
+    </script>
+
+</body>
+</html>
